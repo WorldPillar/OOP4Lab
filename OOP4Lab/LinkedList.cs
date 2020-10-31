@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace OOP4Lab
 {
@@ -45,6 +46,7 @@ namespace OOP4Lab
                 root.prevNode = newNode;
                 root = newNode;
             }
+            current = root;
         }
         public void push_back(Shape newObj)
         {
@@ -139,37 +141,63 @@ namespace OOP4Lab
     {
         protected Color color;
 
+        public abstract bool Current { get; set; }
         public abstract void Move(int x, int y);
+        public abstract bool inShape(int x, int y);
+        public abstract void Draw(IntPtr draw);
+        public abstract void FillDraw(IntPtr draw);
     }
     class CCircle : Shape
     {
         private int x;
         private int y;
-        private int r = 5;
+        private int r = 50;
+        private bool current;
         public CCircle()
         {
             x = 0;
             y = 0;
             r = 0;
+            current = false;
         }
         public CCircle(int x, int y)
         {
-            this.x = x;
-            this.y = y;
+            this.x = x - r / 2;
+            this.y = y - r / 2;
+            current = true;
             color = Color.Black;
         }
+
         public override void Move(int dx, int dy)
         {
             x += dx;
             y += dy;
         }
-        public int X
+        public override bool inShape(int x, int y)
         {
-            get => x;
+            if (Math.Abs(this.x - x) <= r && Math.Abs(this.y - y) <= r)
+            {
+                current = true;
+                return true;
+            }
+            return false;
         }
-        public int Y
+        public override void Draw(IntPtr draw)
         {
-            get => y;
+            Graphics g = Graphics.FromHwnd(draw);
+
+            g.DrawEllipse(new Pen(Color.Black), x, y, r, r);
+        }
+        public override void FillDraw(IntPtr draw)
+        {
+            Graphics g = Graphics.FromHwnd(draw);
+
+            g.FillEllipse(new SolidBrush(Color.Black), x, y, r, r);
+        }
+        public override bool Current
+        {
+            get => current;
+            set => current = value;
         }
         ~CCircle()
         {

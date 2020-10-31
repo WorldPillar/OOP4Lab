@@ -1,6 +1,6 @@
 ﻿namespace OOP4Lab
 {
-    partial class Form1
+    partial class PaintBox
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -28,21 +28,35 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.drawBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.drawBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // Form1
+            // drawBox
+            // 
+            this.drawBox.Location = new System.Drawing.Point(0, 0);
+            this.drawBox.Name = "drawBox";
+            this.drawBox.Size = new System.Drawing.Size(1185, 610);
+            this.drawBox.TabIndex = 0;
+            this.drawBox.TabStop = false;
+            this.drawBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.circleCreate);
+            // 
+            // PaintBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 608);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Controls.Add(this.drawBox);
+            this.Name = "PaintBox";
+            this.Text = "PaintBox";
+            ((System.ComponentModel.ISupportInitialize)(this.drawBox)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.PictureBox drawBox;
     }
 }
 

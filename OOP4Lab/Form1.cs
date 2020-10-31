@@ -10,16 +10,39 @@ using System.Windows.Forms;
 
 namespace OOP4Lab
 {
-    public partial class Form1 : Form
+    public partial class PaintBox : Form
     {
-        public Form1()
+        LinkedList Mylist;
+        public PaintBox()
         {
             InitializeComponent();
+            Mylist = new LinkedList();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        public bool inCircle(int xPos, int yPos)
         {
+            Mylist.front();
+            while (!Mylist.eol())
+            {
+                if (Mylist.getObject().inShape(xPos, yPos))
+                    return true;
+                else
+                    Mylist.next();
+            }
+            return false;
+        }
 
+        private void circleCreate(object sender, MouseEventArgs e)
+        {
+            if (!inCircle(e.X, e.Y))
+            {
+                Mylist.push_front(new CCircle(e.X, e.Y));
+                Mylist.getObject().FillDraw(drawBox.Handle);
+            }
+            else
+            {
+
+            }
         }
     }
 }
