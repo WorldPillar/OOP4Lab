@@ -98,13 +98,11 @@ namespace OOP4Lab
                     if (Mylist.getObject().Current == true)
                     {
                         Mylist.erase(Mylist.getCurrent());
-                        Draw();
                     }
                     else
-                    {
                         Mylist.next();
-                    }
                 }
+                Draw();
             }
         }
     }

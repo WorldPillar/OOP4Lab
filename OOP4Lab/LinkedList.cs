@@ -30,7 +30,13 @@ namespace OOP4Lab
         public bool eol() { return current == null; }
         public void front() { current = root; }
         public void back() { current = tail; }
-        public void next() { current = current.nextNode; }
+        public void next()
+        {
+            if (current.nextNode != null)
+                current = current.nextNode;
+            else
+                current = null;
+        }
         public void push_front(Shape newObj)
         {
             ++count;
@@ -83,13 +89,23 @@ namespace OOP4Lab
             Node prevIt = it.prevNode;
             Node nextIt = it.nextNode;
             if (prevIt != null)
-                prevIt.nextNode = it.nextNode;
+            {
+                prevIt.nextNode = nextIt;
+            }
             else
+            {
                 root = nextIt;
+            }
             if (nextIt != null)
-                nextIt.prevNode = it.prevNode;
+            {
+                nextIt.prevNode = prevIt;
+                current = nextIt;
+            }
             else
+            {
                 tail = prevIt;
+                current = tail;
+            }
             it = null;
         }
         public void clear()
