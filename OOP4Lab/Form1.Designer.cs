@@ -49,8 +49,7 @@
             this.Controls.Add(this.drawBox);
             this.Name = "PaintBox";
             this.Text = "PaintBox";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.keyUp);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Paint_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.drawBox)).EndInit();
             this.ResumeLayout(false);
 

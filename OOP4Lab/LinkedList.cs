@@ -109,6 +109,11 @@ namespace OOP4Lab
         {
             return current.getObj;
         }
+        
+        public Node getCurrent()
+        {
+            return current;
+        }
     }
     class Node
     {

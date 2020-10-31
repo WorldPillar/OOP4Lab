@@ -15,13 +15,17 @@ namespace OOP4Lab
         LinkedList Mylist;
         private Graphics g;
         private Bitmap bitmapDraw;
-        private bool ctrlPress = false;
         public PaintBox()
         {
             InitializeComponent();
             Mylist = new LinkedList();
             bitmapDraw = new Bitmap(drawBox.Width, drawBox.Height);
             g = Graphics.FromImage(bitmapDraw);
+        }
+
+        public bool controlPressed()
+        {
+            return (Control.ModifierKeys & Keys.Control) == Keys.Control;
         }
 
         public void Draw()
@@ -41,7 +45,7 @@ namespace OOP4Lab
 
         public bool inCircle(int xPos, int yPos)
         {
-            if (!ctrlPress)
+            if (!controlPressed())
             {
                 Mylist.front();
                 while (!Mylist.eol())
@@ -62,6 +66,12 @@ namespace OOP4Lab
                     Mylist.next();
                 }
             }
+            Mylist.front();
+            while (!Mylist.eol())
+            {
+                Mylist.getObject().Current = false;
+                Mylist.next();
+            }
             return false;
         }
 
@@ -78,16 +88,24 @@ namespace OOP4Lab
             }
         }
 
-        private void keyDown(object sender, KeyEventArgs e)
+        private void Paint_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Control)
-                ctrlPress = true;
-        }
-
-        private void keyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Control)
-                ctrlPress = false;
+            if (e.KeyCode == Keys.Delete)
+            {
+                Mylist.front();
+                while (!Mylist.eol())
+                {
+                    if (Mylist.getObject().Current == true)
+                    {
+                        Mylist.erase(Mylist.getCurrent());
+                        Draw();
+                    }
+                    else
+                    {
+                        Mylist.next();
+                    }
+                }
+            }
         }
     }
 }
