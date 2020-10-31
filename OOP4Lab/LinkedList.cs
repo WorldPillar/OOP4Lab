@@ -14,6 +14,7 @@ namespace OOP4Lab
         Node tail;
         Node current;
         private int count = 0;
+
         public LinkedList()
         {
             root = null;
