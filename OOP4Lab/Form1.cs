@@ -13,21 +13,54 @@ namespace OOP4Lab
     public partial class PaintBox : Form
     {
         LinkedList Mylist;
+        private Graphics g;
+        private Bitmap bitmapDraw;
+        private bool ctrlPress = false;
         public PaintBox()
         {
             InitializeComponent();
             Mylist = new LinkedList();
+            bitmapDraw = new Bitmap(drawBox.Width, drawBox.Height);
+            g = Graphics.FromImage(bitmapDraw);
+        }
+
+        public void Draw()
+        {
+            g.Clear(Color.White);
+            Mylist.front();
+            while (!Mylist.eol())
+            {
+                if (Mylist.getObject().Current == true)
+                    Mylist.getObject().FillDraw(bitmapDraw);
+                else
+                    Mylist.getObject().Draw(bitmapDraw);
+                Mylist.next();
+            }
+            drawBox.Image = bitmapDraw;
         }
 
         public bool inCircle(int xPos, int yPos)
         {
+            if (!ctrlPress)
+            {
+                Mylist.front();
+                while (!Mylist.eol())
+                {
+                    Mylist.getObject().Current = false;
+                    Mylist.next();
+                }
+            }
             Mylist.front();
             while (!Mylist.eol())
             {
                 if (Mylist.getObject().inShape(xPos, yPos))
+                {
                     return true;
+                }
                 else
+                {
                     Mylist.next();
+                }
             }
             return false;
         }
@@ -36,13 +69,25 @@ namespace OOP4Lab
         {
             if (!inCircle(e.X, e.Y))
             {
-                Mylist.push_front(new CCircle(e.X, e.Y));
-                Mylist.getObject().FillDraw(drawBox.Handle);
+                Mylist.push_back(new CCircle(e.X, e.Y));
+                Draw();
             }
             else
             {
-
+                Draw();
             }
+        }
+
+        private void keyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Control)
+                ctrlPress = true;
+        }
+
+        private void keyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Control)
+                ctrlPress = false;
         }
     }
 }

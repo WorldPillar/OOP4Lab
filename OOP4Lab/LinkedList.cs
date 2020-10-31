@@ -139,19 +139,17 @@ namespace OOP4Lab
     }
     abstract class Shape
     {
-        protected Color color;
-
         public abstract bool Current { get; set; }
         public abstract void Move(int x, int y);
         public abstract bool inShape(int x, int y);
-        public abstract void Draw(IntPtr draw);
-        public abstract void FillDraw(IntPtr draw);
+        public abstract void Draw(Bitmap bitmapDraw);
+        public abstract void FillDraw(Bitmap bitmapDraw);
     }
     class CCircle : Shape
     {
         private int x;
         private int y;
-        private int r = 50;
+        private int r = 30;
         private bool current;
         public CCircle()
         {
@@ -162,10 +160,9 @@ namespace OOP4Lab
         }
         public CCircle(int x, int y)
         {
-            this.x = x - r / 2;
-            this.y = y - r / 2;
+            this.x = x;
+            this.y = y;
             current = true;
-            color = Color.Black;
         }
 
         public override void Move(int dx, int dy)
@@ -182,17 +179,17 @@ namespace OOP4Lab
             }
             return false;
         }
-        public override void Draw(IntPtr draw)
+        public override void Draw(Bitmap bitmapDraw)
         {
-            Graphics g = Graphics.FromHwnd(draw);
+            Graphics g = Graphics.FromImage(bitmapDraw);
 
-            g.DrawEllipse(new Pen(Color.Black), x, y, r, r);
+            g.DrawEllipse(new Pen(Color.Black), x - r, y - r, r * 2, r * 2);
         }
-        public override void FillDraw(IntPtr draw)
+        public override void FillDraw(Bitmap bitmapDraw)
         {
-            Graphics g = Graphics.FromHwnd(draw);
+            Graphics g = Graphics.FromImage(bitmapDraw);
 
-            g.FillEllipse(new SolidBrush(Color.Black), x, y, r, r);
+            g.FillEllipse(new SolidBrush(Color.Black), x - r, y - r, r * 2, r * 2);
         }
         public override bool Current
         {
@@ -204,7 +201,6 @@ namespace OOP4Lab
             x = 0;
             y = 0;
             r = 0;
-            color = Color.Empty;
         }
     }
 }
