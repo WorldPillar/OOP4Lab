@@ -56,39 +56,35 @@ namespace OOP4Lab
             drawBox.Image = bitmapDraw;
         }
 
-        public bool inCircle(int xPos, int yPos)
+        private void allFalse()
         {
-            //Если control не зажат, объекты перестанут быть текущими
-            if (!controlPressed())
-            {
-                Mylist.front();
-                while (!Mylist.eol())
-                {
-                    Mylist.getObject().Current = false;
-                    Mylist.next();
-                }
-            }
-            //проверка, находился ли курсор при нажатии в круге
-            Mylist.front();
-            while (!Mylist.eol())
-            {
-                if (Mylist.getObject().inShape(xPos, yPos))
-                {
-                    return true;
-                }
-                else
-                {
-                    Mylist.next();
-                }
-            }
-            //Если control был зажат, но объекты не были выделены, то
-            //создасться новый объект, а остальные перестанут быть выделеными
             Mylist.front();
             while (!Mylist.eol())
             {
                 Mylist.getObject().Current = false;
                 Mylist.next();
             }
+        }
+
+        public bool inCircle(int xPos, int yPos)
+        {
+            //Если control не зажат, объекты перестанут быть текущими
+            if (!controlPressed())
+                allFalse();
+
+            //проверка, находился ли курсор при нажатии в круге
+            Mylist.front();
+            while (!Mylist.eol())
+            {
+                if (Mylist.getObject().inShape(xPos, yPos))
+                    return true;
+                else
+                    Mylist.next();
+            }
+
+            //Если control был зажат, но объекты не были выделены, то
+            //создасться новый объект, а остальные перестанут быть выделеными
+            allFalse();
             return false;
         }
 
