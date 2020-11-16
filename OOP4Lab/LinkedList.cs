@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -198,8 +199,11 @@ namespace OOP4Lab
     //Абстрактный класс для хранения различных объектов
     abstract class Shape
     {
-        public int minSize = 5;
+        protected int minSize = 5;
+        protected HatchBrush brush;
 
+        public abstract int getMinSize { get; }
+        public abstract HatchBrush hBrush { set; get; }
         public abstract int Size { get; }
         public abstract Point getCentre();
         public abstract bool Current { get; set; }
@@ -220,12 +224,20 @@ namespace OOP4Lab
             y = 0;
             r = 0;
             current = false;
+            brush = new HatchBrush(
+                HatchStyle.Cross,
+                Color.White,
+                Color.White);
         }
         public CCircle(int x, int y)
         {
             this.x = x;
             this.y = y;
             current = true;
+            brush = new HatchBrush(
+                HatchStyle.Cross,
+                Color.PaleVioletRed,
+                Color.Black);
         }
 
         public override void Move(int dx, int dy)
@@ -248,9 +260,9 @@ namespace OOP4Lab
             Graphics g = Graphics.FromImage(bitmapDraw);
 
             if (current)
-                g.FillEllipse(new SolidBrush(Color.Black), x - r, y - r, r * 2, r * 2);
+                g.FillEllipse(brush, x - r, y - r, r * 2, r * 2);
             else
-                g.DrawEllipse(new Pen(Color.Black), x - r, y - r, r * 2, r * 2);
+                g.FillEllipse(new SolidBrush(brush.BackgroundColor), x - r, y - r, r * 2, r * 2);
         }
 
         public override void Resize(int size)
@@ -263,9 +275,20 @@ namespace OOP4Lab
             get => r;
         }
 
+        public override int getMinSize
+        {
+            get => minSize;
+        }
+
         public override Point getCentre()
         {
             return new Point(x, y);
+        }
+
+        public override HatchBrush hBrush
+        {
+            set => brush = value;
+            get => brush;
         }
 
         public override bool Current
@@ -293,12 +316,20 @@ namespace OOP4Lab
             y = 0;
             hWidth = 0;
             current = false;
+            brush = new HatchBrush(
+                HatchStyle.Cross,
+                Color.White,
+                Color.White);
         }
         public CRectangle(int x, int y)
         {
             this.x = x;
             this.y = y;
             current = true;
+            brush = new HatchBrush(
+                HatchStyle.Cross,
+                Color.PaleVioletRed,
+                Color.Black);
         }
 
         public override void Move(int dx, int dy)
@@ -321,7 +352,7 @@ namespace OOP4Lab
             Graphics g = Graphics.FromImage(bitmapDraw);
 
             if (current)
-                g.FillRectangle(new SolidBrush(Color.Black), x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
+                g.FillRectangle(brush, x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
             else
                 g.DrawRectangle(new Pen(Color.Black), x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
         }
@@ -336,6 +367,11 @@ namespace OOP4Lab
             get => hWidth;
         }
 
+        public override int getMinSize
+        {
+            get => minSize;
+        }
+
         public override bool Current
         {
             get => current;
@@ -345,6 +381,12 @@ namespace OOP4Lab
         public override Point getCentre()
         {
             return new Point(x, y);
+        }
+
+        public override HatchBrush hBrush
+        {
+            set => brush = value;
+            get => brush;
         }
 
         ~CRectangle()

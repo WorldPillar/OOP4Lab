@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace OOP4Lab
             g.Clear(Color.White);
             drawBox.Image = bitmapDraw;
 
-            model = new Model(drawBox.Width, drawBox.Height);
+            model = new Model(drawBox.Width, drawBox.Height, chooseColor);
         }
 
         public bool controlPressed()
@@ -70,8 +71,8 @@ namespace OOP4Lab
         {
             //Если control не зажат,
             //объекты перестанут быть текущими
-            if (!controlPressed())
-                allFalse();
+            //if (!controlPressed())
+            allFalse();
 
             //проверка, находился ли курсор в круге
             Mylist.back();
@@ -154,37 +155,51 @@ namespace OOP4Lab
     {
         int width;
         int height;
-        public Model(int width, int height)
+        ColorDialog colorChoose;
+        public Model(int width, int height, ColorDialog color)
         {
             this.width = width;
             this.height = height;
+            colorChoose = color;
         }
         public void ShapeAct(Keys key, Shape shape)
         {
+            if (key == Keys.C)
+            {
+                colorChoose.Color = shape.hBrush.BackgroundColor;
+                colorChoose.ShowDialog();
+
+                shape.hBrush = new HatchBrush(HatchStyle.Cross,
+                Color.PaleVioletRed, colorChoose.Color);
+
+                return;
+            }
+            int y0 = shape.getCentre().Y - shape.Size;
+            int y1 = shape.getCentre().Y + shape.Size;
+            int x0 = shape.getCentre().X - shape.Size;
+            int x1 = shape.getCentre().X + shape.Size;
             switch (key)
             {
                 case Keys.OemMinus:
                     {
-                        if (shape.minSize <= shape.Size - 5)
+                        if (shape.getMinSize <= shape.Size - 5)
                             shape.Resize(-5);
                         break;
                     }
                 case Keys.Oemplus:
                     {
-                        int y0 = shape.getCentre().Y - shape.Size - 5;
-                        int y1 = shape.getCentre().Y + shape.Size + 5;
-                        int x0 = shape.getCentre().X - shape.Size - 5;
-                        int x1 = shape.getCentre().X + shape.Size + 5;
-                        if (x0 < 0 || y0 < 0 || x1 > width || y1 > height)
+                        if (x0 - 5 < 0 || y0 - 5 < 0 || x1 + 5 > width || y1 + 5 > height)
                             return;
                         shape.Resize(5);
                         break;
                     }
                 case Keys.Down:
                     {
-                        int y = shape.getCentre().Y + shape.Size;
-                        if (y + 5 >= height)
+                        if (y1 + 5 > height)
                         {
+                            if (y1 < height)
+                                shape.Move(0, height - y1);
+
                             return;
                         }
 
@@ -193,25 +208,37 @@ namespace OOP4Lab
                     }
                 case Keys.Up:
                     {
-                        int y = shape.getCentre().Y - shape.Size;
-                        if (y - 5 < 0)
+                        if (y0 - 5 < 0)
+                        {
+                            if (y0 > 0)
+                                shape.Move(0, -y0);
+
                             return;
+                        }
+
                         shape.Move(0, -5);
                         break;
                     }
                 case Keys.Left:
                     {
-                        int x = shape.getCentre().X - shape.Size;
-                        if (x - 5 < 0)
+                        if (x0 - 5 < 0)
+                        {
+                            if (x0 > 0)
+                                shape.Move(-x0, 0);
+
                             return;
+                        }
+
                         shape.Move(-5, 0);
                         break;
                     }
                 case Keys.Right:
                     {
-                        int x = shape.getCentre().X + shape.Size;
-                        if (x + 5 > width)
+                        if (x1 + 5 > width)
                         {
+                            if (x1 < width)
+                                shape.Move(width - x1, 0);
+
                             return;
                         }
 
@@ -220,7 +247,6 @@ namespace OOP4Lab
                     }
             }
         }
-
     }
 
 }

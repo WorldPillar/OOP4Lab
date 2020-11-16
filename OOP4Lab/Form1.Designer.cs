@@ -30,11 +30,17 @@
         {
             this.drawBox = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.сВызовColorDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.увеличениеФигурыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.уменьшениФигурыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.стрелкиДвижениеФигурыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выберитеФигуруToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.circleMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.squareMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.треугольникToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.отрезокToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chooseColor = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.drawBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -43,7 +49,7 @@
             // 
             this.drawBox.Location = new System.Drawing.Point(0, 27);
             this.drawBox.Name = "drawBox";
-            this.drawBox.Size = new System.Drawing.Size(1185, 600);
+            this.drawBox.Size = new System.Drawing.Size(1184, 523);
             this.drawBox.TabIndex = 0;
             this.drawBox.TabStop = false;
             this.drawBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ShapeCreate);
@@ -51,12 +57,48 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.оПрограммеToolStripMenuItem,
             this.выберитеФигуруToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1184, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // оПрограммеToolStripMenuItem
+            // 
+            this.оПрограммеToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.сВызовColorDialogToolStripMenuItem,
+            this.увеличениеФигурыToolStripMenuItem,
+            this.уменьшениФигурыToolStripMenuItem,
+            this.стрелкиДвижениеФигурыToolStripMenuItem});
+            this.оПрограммеToolStripMenuItem.Name = "оПрограммеToolStripMenuItem";
+            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
+            this.оПрограммеToolStripMenuItem.Text = "О программе";
+            // 
+            // сВызовColorDialogToolStripMenuItem
+            // 
+            this.сВызовColorDialogToolStripMenuItem.Name = "сВызовColorDialogToolStripMenuItem";
+            this.сВызовColorDialogToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.сВызовColorDialogToolStripMenuItem.Text = "\'С\' - вызов color dialog";
+            // 
+            // увеличениеФигурыToolStripMenuItem
+            // 
+            this.увеличениеФигурыToolStripMenuItem.Name = "увеличениеФигурыToolStripMenuItem";
+            this.увеличениеФигурыToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.увеличениеФигурыToolStripMenuItem.Text = "\'+\' - увеличение фигуры";
+            // 
+            // уменьшениФигурыToolStripMenuItem
+            // 
+            this.уменьшениФигурыToolStripMenuItem.Name = "уменьшениФигурыToolStripMenuItem";
+            this.уменьшениФигурыToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.уменьшениФигурыToolStripMenuItem.Text = "\'-\' - уменьшени фигуры";
+            // 
+            // стрелкиДвижениеФигурыToolStripMenuItem
+            // 
+            this.стрелкиДвижениеФигурыToolStripMenuItem.Name = "стрелкиДвижениеФигурыToolStripMenuItem";
+            this.стрелкиДвижениеФигурыToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.стрелкиДвижениеФигурыToolStripMenuItem.Text = "Стрелки - движение фигуры";
             // 
             // выберитеФигуруToolStripMenuItem
             // 
@@ -99,11 +141,16 @@
             this.отрезокToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.отрезокToolStripMenuItem.Text = "Отрезок";
             // 
+            // chooseColor
+            // 
+            this.chooseColor.AnyColor = true;
+            this.chooseColor.SolidColorOnly = true;
+            // 
             // PaintBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1184, 624);
+            this.ClientSize = new System.Drawing.Size(1184, 550);
             this.Controls.Add(this.drawBox);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -123,6 +170,12 @@
 
         private System.Windows.Forms.PictureBox drawBox;
         private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ColorDialog chooseColor;
+        private System.Windows.Forms.ToolStripMenuItem оПрограммеToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem сВызовColorDialogToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem увеличениеФигурыToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem уменьшениФигурыToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem стрелкиДвижениеФигурыToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem выберитеФигуруToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem circleMenu;
         private System.Windows.Forms.ToolStripMenuItem squareMenu;
