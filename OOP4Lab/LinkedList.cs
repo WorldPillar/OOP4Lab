@@ -148,6 +148,8 @@ namespace OOP4Lab
         //Возвращает текущий объект, хранящийся в Node
         public Shape getObject()
         {
+            if (current == null)
+                return null;
             return current.getObj;
         }
         //Возвращает текущий объект Node
@@ -196,11 +198,15 @@ namespace OOP4Lab
     //Абстрактный класс для хранения различных объектов
     abstract class Shape
     {
+        public int minSize = 5;
+
+        public abstract int Size { get; }
+        public abstract Point getCentre();
         public abstract bool Current { get; set; }
         public abstract void Move(int x, int y);
+        public abstract void Resize(int size);
         public abstract bool inShape(int x, int y);
         public abstract void Draw(Bitmap bitmapDraw);
-        public abstract void FillDraw(Bitmap bitmapDraw);
     }
     class CCircle : Shape
     {
@@ -229,25 +235,39 @@ namespace OOP4Lab
         }
         public override bool inShape(int x, int y)
         {
-            if (Math.Abs(this.x - x) <= r && Math.Abs(this.y - y) <= r)
+            if (Math.Sqrt(Math.Pow(this.x - x, 2) + Math.Pow(this.y - y, 2)) <= r)
             {
                 current = true;
                 return true;
             }
             return false;
         }
+
         public override void Draw(Bitmap bitmapDraw)
         {
             Graphics g = Graphics.FromImage(bitmapDraw);
 
-            g.DrawEllipse(new Pen(Color.Black), x - r, y - r, r * 2, r * 2);
+            if (current)
+                g.FillEllipse(new SolidBrush(Color.Black), x - r, y - r, r * 2, r * 2);
+            else
+                g.DrawEllipse(new Pen(Color.Black), x - r, y - r, r * 2, r * 2);
         }
-        public override void FillDraw(Bitmap bitmapDraw)
-        {
-            Graphics g = Graphics.FromImage(bitmapDraw);
 
-            g.FillEllipse(new SolidBrush(Color.Black), x - r, y - r, r * 2, r * 2);
+        public override void Resize(int size)
+        {
+            r += size;
         }
+
+        public override int Size
+        {
+            get => r;
+        }
+
+        public override Point getCentre()
+        {
+            return new Point(x, y);
+        }
+
         public override bool Current
         {
             get => current;
@@ -258,6 +278,80 @@ namespace OOP4Lab
             x = 0;
             y = 0;
             r = 0;
+        }
+    }
+
+    class CRectangle : Shape
+    {
+        private int x;
+        private int y;
+        private int hWidth = 30;
+        private bool current;
+        public CRectangle()
+        {
+            x = 0;
+            y = 0;
+            hWidth = 0;
+            current = false;
+        }
+        public CRectangle(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+            current = true;
+        }
+
+        public override void Move(int dx, int dy)
+        {
+            x += dx;
+            y += dy;
+        }
+        public override bool inShape(int x, int y)
+        {
+            if (Math.Abs(this.x - x) <= hWidth && Math.Abs(this.y - y) <= hWidth)
+            {
+                current = true;
+                return true;
+            }
+            return false;
+        }
+
+        public override void Draw(Bitmap bitmapDraw)
+        {
+            Graphics g = Graphics.FromImage(bitmapDraw);
+
+            if (current)
+                g.FillRectangle(new SolidBrush(Color.Black), x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
+            else
+                g.DrawRectangle(new Pen(Color.Black), x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
+        }
+
+        public override void Resize(int size)
+        {
+            hWidth += size;
+        }
+
+        public override int Size
+        {
+            get => hWidth;
+        }
+
+        public override bool Current
+        {
+            get => current;
+            set => current = value;
+        }
+
+        public override Point getCentre()
+        {
+            return new Point(x, y);
+        }
+
+        ~CRectangle()
+        {
+            x = 0;
+            y = 0;
+            hWidth = 0;
         }
     }
 }
