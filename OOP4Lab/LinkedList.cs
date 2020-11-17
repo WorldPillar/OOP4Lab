@@ -214,11 +214,11 @@ namespace OOP4Lab
     }
     class CCircle : Shape
     {
-        private int x;
-        private int y;
-        private int r = 30;
-        private bool current;
-        public CCircle()
+        protected int x;
+        protected int y;
+        protected int r = 30;
+        protected bool current;
+        private CCircle()
         {
             x = 0;
             y = 0;
@@ -310,7 +310,7 @@ namespace OOP4Lab
         private int y;
         private int hWidth = 30;
         private bool current;
-        public CRectangle()
+        private CRectangle()
         {
             x = 0;
             y = 0;
@@ -354,7 +354,7 @@ namespace OOP4Lab
             if (current)
                 g.FillRectangle(brush, x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
             else
-                g.DrawRectangle(new Pen(Color.Black), x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
+                g.FillRectangle(new SolidBrush(brush.BackgroundColor), x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
         }
 
         public override void Resize(int size)
@@ -395,5 +395,43 @@ namespace OOP4Lab
             y = 0;
             hWidth = 0;
         }
+    }
+
+    class CPolygon : CCircle
+    {
+        private PointF[] points;
+        public CPolygon(int x, int y, int amount) : base(x, y)
+        {
+            points = new PointF[amount];
+
+            double angle = Math.PI*2 / amount;
+
+            for (int i = 0; i < amount; ++i)
+            {
+                points[i] = new PointF((float)Math.Cos((-Math.PI / 2) + angle * i) * r + x,
+                    (float)Math.Sin((-Math.PI / 2) + angle * i) * r + y);
+            }
+        }
+
+        public override void Draw(Bitmap bitmapDraw)
+        {
+            Graphics g = Graphics.FromImage(bitmapDraw);
+
+            if (current)
+                g.FillPolygon(brush, points);
+            else
+                g.FillPolygon(new SolidBrush(brush.BackgroundColor), points);
+        }
+
+        public override bool inShape(int x, int y)
+        {
+            if (Math.Sqrt(Math.Pow(this.x - x, 2) + Math.Pow(this.y - y, 2)) <= r)
+            {
+                current = true;
+                return true;
+            }
+            return false;
+        }
+
     }
 }

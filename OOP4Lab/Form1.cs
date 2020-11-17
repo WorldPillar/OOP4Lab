@@ -105,6 +105,10 @@ namespace OOP4Lab
                     {
                         Mylist.push_back(new CRectangle(e.X, e.Y));
                     }
+                    else if (polygonMenu.Checked)
+                    {
+                        Mylist.push_back(new CPolygon(e.X, e.Y, 3));
+                    }
                     Draw();
                 }
                 else
@@ -151,6 +155,7 @@ namespace OOP4Lab
         }
     }
 
+    //Класс Model, который по заданному параметру изменяет фигуру
     class Model
     {
         int width;
@@ -166,26 +171,33 @@ namespace OOP4Lab
         {
             if (key == Keys.C)
             {
+                //Сохраняем цвет фигуры
                 colorChoose.Color = shape.hBrush.BackgroundColor;
+                //Вызываем color dialog
                 colorChoose.ShowDialog();
 
+                //Задаём кисть с выбранным цветом
                 shape.hBrush = new HatchBrush(HatchStyle.Cross,
                 Color.PaleVioletRed, colorChoose.Color);
 
                 return;
             }
+            //Сохраняем координаты, которые будут сравниваться с
+            //рамками drawbox
             int y0 = shape.getCentre().Y - shape.Size;
             int y1 = shape.getCentre().Y + shape.Size;
             int x0 = shape.getCentre().X - shape.Size;
             int x1 = shape.getCentre().X + shape.Size;
             switch (key)
             {
+                //Уменьшает фигуру
                 case Keys.OemMinus:
                     {
                         if (shape.getMinSize <= shape.Size - 5)
                             shape.Resize(-5);
                         break;
                     }
+                //Увеличиваем фигуру
                 case Keys.Oemplus:
                     {
                         if (x0 - 5 < 0 || y0 - 5 < 0 || x1 + 5 > width || y1 + 5 > height)
@@ -193,6 +205,7 @@ namespace OOP4Lab
                         shape.Resize(5);
                         break;
                     }
+                //Двигаем фигуру вниз
                 case Keys.Down:
                     {
                         if (y1 + 5 > height)
@@ -206,6 +219,7 @@ namespace OOP4Lab
                         shape.Move(0, 5);
                         break;
                     }
+                //Двигаем фигуру вверх
                 case Keys.Up:
                     {
                         if (y0 - 5 < 0)
@@ -219,6 +233,7 @@ namespace OOP4Lab
                         shape.Move(0, -5);
                         break;
                     }
+                //Двигаем фигуру влево
                 case Keys.Left:
                     {
                         if (x0 - 5 < 0)
@@ -232,6 +247,7 @@ namespace OOP4Lab
                         shape.Move(-5, 0);
                         break;
                     }
+                //Двигаем фигуру вправо
                 case Keys.Right:
                     {
                         if (x1 + 5 > width)
