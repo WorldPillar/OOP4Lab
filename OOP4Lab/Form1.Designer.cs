@@ -35,12 +35,13 @@
             this.увеличениеФигурыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.уменьшениФигурыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.стрелкиДвижениеФигурыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.выберитеФигуруToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chooseShape = new System.Windows.Forms.ToolStripMenuItem();
             this.circleMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.triangleMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.squareMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.fiveMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.sixMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.starMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.отрезокToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chooseColor = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.drawBox)).BeginInit();
@@ -60,7 +61,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.оПрограммеToolStripMenuItem,
-            this.выберитеФигуруToolStripMenuItem});
+            this.chooseShape});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1184, 24);
@@ -102,18 +103,19 @@
             this.стрелкиДвижениеФигурыToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.стрелкиДвижениеФигурыToolStripMenuItem.Text = "Стрелки - движение фигуры";
             // 
-            // выберитеФигуруToolStripMenuItem
+            // chooseShape
             // 
-            this.выберитеФигуруToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.chooseShape.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.circleMenu,
             this.triangleMenu,
             this.squareMenu,
             this.fiveMenu,
             this.sixMenu,
+            this.starMenu,
             this.отрезокToolStripMenuItem});
-            this.выберитеФигуруToolStripMenuItem.Name = "выберитеФигуруToolStripMenuItem";
-            this.выберитеФигуруToolStripMenuItem.Size = new System.Drawing.Size(116, 20);
-            this.выберитеФигуруToolStripMenuItem.Text = "Выберите фигуру";
+            this.chooseShape.Name = "chooseShape";
+            this.chooseShape.Size = new System.Drawing.Size(116, 20);
+            this.chooseShape.Text = "Выберите фигуру";
             // 
             // circleMenu
             // 
@@ -123,6 +125,7 @@
             this.circleMenu.Name = "circleMenu";
             this.circleMenu.Size = new System.Drawing.Size(180, 22);
             this.circleMenu.Text = "Круг";
+            this.circleMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
             // triangleMenu
             // 
@@ -130,6 +133,7 @@
             this.triangleMenu.Name = "triangleMenu";
             this.triangleMenu.Size = new System.Drawing.Size(180, 22);
             this.triangleMenu.Text = "Треугольник";
+            this.triangleMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
             // squareMenu
             // 
@@ -137,6 +141,7 @@
             this.squareMenu.Name = "squareMenu";
             this.squareMenu.Size = new System.Drawing.Size(180, 22);
             this.squareMenu.Text = "Квадрат";
+            this.squareMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
             // fiveMenu
             // 
@@ -144,6 +149,7 @@
             this.fiveMenu.Name = "fiveMenu";
             this.fiveMenu.Size = new System.Drawing.Size(180, 22);
             this.fiveMenu.Text = "Пятиугольник";
+            this.fiveMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
             // sixMenu
             // 
@@ -151,6 +157,15 @@
             this.sixMenu.Name = "sixMenu";
             this.sixMenu.Size = new System.Drawing.Size(180, 22);
             this.sixMenu.Text = "Шестиугольник";
+            this.sixMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
+            // 
+            // starMenu
+            // 
+            this.starMenu.CheckOnClick = true;
+            this.starMenu.Name = "starMenu";
+            this.starMenu.Size = new System.Drawing.Size(180, 22);
+            this.starMenu.Text = "Звезда";
+            this.starMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
             // отрезокToolStripMenuItem
             // 
@@ -158,6 +173,7 @@
             this.отрезокToolStripMenuItem.Name = "отрезокToolStripMenuItem";
             this.отрезокToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.отрезокToolStripMenuItem.Text = "Отрезок";
+            this.отрезокToolStripMenuItem.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
             // chooseColor
             // 
@@ -194,13 +210,14 @@
         private System.Windows.Forms.ToolStripMenuItem увеличениеФигурыToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem уменьшениФигурыToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem стрелкиДвижениеФигурыToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem выберитеФигуруToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem chooseShape;
         private System.Windows.Forms.ToolStripMenuItem circleMenu;
         private System.Windows.Forms.ToolStripMenuItem squareMenu;
         private System.Windows.Forms.ToolStripMenuItem triangleMenu;
         private System.Windows.Forms.ToolStripMenuItem отрезокToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fiveMenu;
         private System.Windows.Forms.ToolStripMenuItem sixMenu;
+        private System.Windows.Forms.ToolStripMenuItem starMenu;
     }
 }
 

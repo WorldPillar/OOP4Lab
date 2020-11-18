@@ -220,6 +220,7 @@ namespace OOP4Lab
         public abstract void Move(int x, int y);
         public abstract void Resize(int size);
         public abstract bool TryMove(int dx, int dy, Graphics g);
+        public abstract bool TryResize(int d, Graphics g);
         public abstract bool inShape(int x, int y);
         public abstract void Draw(Graphics g);
     }
@@ -230,16 +231,17 @@ namespace OOP4Lab
         protected int r = 30;
         protected bool current;
         protected GraphicsPath graph;
-        private CCircle()
+        protected CCircle()
         {
+            graph = new GraphicsPath();
             x = 0;
             y = 0;
             r = 0;
             current = false;
             brush = new HatchBrush(
                 HatchStyle.Cross,
-                Color.White,
-                Color.White);
+                Color.PaleVioletRed,
+                Color.Black);
         }
         public CCircle(int x, int y)
         {
@@ -251,8 +253,6 @@ namespace OOP4Lab
                 HatchStyle.Cross,
                 Color.PaleVioletRed,
                 Color.Black);
-
-            graph.AddEllipse(this.x - r, this.y - r, r * 2, r * 2);
         }
 
         public override void Move(int dx, int dy)
@@ -273,6 +273,7 @@ namespace OOP4Lab
 
         public override void Draw(Graphics g)
         {
+            Update();
             if (current)
                 g.FillPath(brush, graph);
             else
@@ -302,6 +303,22 @@ namespace OOP4Lab
                 if (it.X < 0 || it.Y < 0
                     || it.X > g.VisibleClipBounds.Width || it.Y > g.VisibleClipBounds.Height)
                     return false;
+            return true;
+        }
+
+        public override bool TryResize(int d, Graphics g)
+        {
+            if (r + d <= 0)
+                return false;
+            else
+            {
+                int y0 = y - r - d;
+                int y1 = y + r + d;
+                int x0 = x - r - d;
+                int x1 = x + r + d;
+                if (x0 < 0 || y0 < 0 || x1 > g.VisibleClipBounds.Width || y1 > g.VisibleClipBounds.Height)
+                    return false;
+            }
             return true;
         }
 
@@ -404,6 +421,22 @@ namespace OOP4Lab
             return true;
         }
 
+        public override bool TryResize(int d, Graphics g)
+        {
+            if (hWidth + d <= 0)
+                return false;
+            else
+            {
+                int y0 = y - hWidth - d;
+                int y1 = y + hWidth + d;
+                int x0 = x - hWidth - d;
+                int x1 = x + hWidth + d;
+                if (x0 < 0 || y0 < 0 || x1 > g.VisibleClipBounds.Width || y1 > g.VisibleClipBounds.Height)
+                    return false;
+            }
+            return true;
+        }
+
         public override int Size
         {
             get => hWidth;
@@ -436,20 +469,24 @@ namespace OOP4Lab
 
     class CPolygon : CCircle
     {
-        private PointF[] points;
+        protected PointF[] points;
+
         public CPolygon(int x, int y, int amount) : base(x, y)
         {
-            graph = new GraphicsPath();
             points = new PointF[amount];
 
-            double angle = Math.PI*2 / amount;
+            CreatPolygon();
+        }
 
-            for (int i = 0; i < amount; ++i)
+        protected virtual void CreatPolygon()
+        {
+            double angle = Math.PI * 2 / points.Length;
+
+            for (int i = 0; i < points.Length; ++i)
             {
                 points[i] = new PointF((float)Math.Cos((-Math.PI / 2) + angle * i) * r + x,
                     (float)Math.Sin((-Math.PI / 2) + angle * i) * r + y);
             }
-            graph.AddPolygon(points);
         }
 
         public override void Move(int dx, int dy)
@@ -494,6 +531,67 @@ namespace OOP4Lab
                     return false;
             }
             return true;
+        }
+
+        public override bool TryResize(int d, Graphics g)
+        {
+            if (r + d <= 0)
+                return false;
+            else
+            {
+                foreach (var it in points)
+                {
+                    float y0 = it.Y - d;
+                    float y1 = it.Y + d;
+                    float x0 = it.X - d;
+                    float x1 = it.X + d;
+                    if (x0 < 0 || y0 < 0 || x1 > g.VisibleClipBounds.Width || y1 > g.VisibleClipBounds.Height)
+                        return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    class CStar : CPolygon
+    {
+        public CStar(int x, int y) : base(x, y, 10)
+        {
+            graph = new GraphicsPath();
+        }
+
+        protected override void CreatPolygon()
+        {
+            double angle = Math.PI * 2 / 10;
+
+            for (int i = 0; i < 10; ++i)
+            {
+                if (i % 2 == 0)
+                    points[i] = new PointF((float)Math.Cos((-Math.PI / 2) + angle * i) * r + x,
+                    (float)Math.Sin((-Math.PI / 2) + angle * i) * r + y);
+                else
+                    points[i] = new PointF((float)Math.Cos((-Math.PI / 2) + angle * i) * (r / 2) + x,
+                    (float)Math.Sin((-Math.PI / 2) + angle * i) * (r / 2) + y);
+            }
+        }
+
+        public override void Resize(int size)
+        {
+            r += size;
+
+            double angle = Math.PI * 2 / points.Length;
+
+            for (int i = 0; i < points.Length; ++i)
+            {
+                float rad = r;
+                if (i % 2 == 0)
+                    rad = r;
+                else rad = r / 2;
+
+                points[i].X = (float)Math.Cos((-Math.PI / 2) + angle * i) * rad + x;
+                points[i].Y = (float)Math.Sin((-Math.PI / 2) + angle * i) * rad + y;
+            }
+            Update();
         }
     }
 }

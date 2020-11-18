@@ -117,8 +117,13 @@ namespace OOP4Lab
                     {
                         Mylist.push_back(new CPolygon(e.X, e.Y, 6));
                     }
+                    else if (starMenu.Checked)
+                    {
+                        Mylist.push_back(new CStar(e.X, e.Y));
+                    }
 
-                    if (!Mylist.getTail().TryMove(0, 0, g))
+                    if (!Mylist.isEmpty())
+                        if (!Mylist.getTail().TryMove(0, 0, g))
                         Mylist.erase(Mylist.back());
 
                     Draw();
@@ -165,6 +170,24 @@ namespace OOP4Lab
 
             Draw();
         }
+
+        private void ToolStripMenueItem_MouseDown(object sender, MouseEventArgs e)
+        {
+            var thisTsmi = (ToolStripMenuItem)sender;
+            foreach (ToolStripMenuItem tsmi in thisTsmi.GetCurrentParent().Items)
+            {
+                tsmi.Checked = thisTsmi == tsmi;
+            }
+        }
+
+        private void ToolStripMenueItem_Click(object sender, EventArgs e)
+        {
+            var thisTsmi = (ToolStripMenuItem)sender;
+            foreach (ToolStripMenuItem tsmi in thisTsmi.GetCurrentParent().Items)
+            {
+                tsmi.Checked = thisTsmi == tsmi;
+            }
+        }
     }
 
     //Класс Model, который по заданному параметру изменяет фигуру
@@ -200,18 +223,13 @@ namespace OOP4Lab
 
                 return;
             }
-            //Сохраняем координаты, которые будут сравниваться с
-            //рамками drawbox
-            int y0 = shape.getCentre().Y - shape.Size;
-            int y1 = shape.getCentre().Y + shape.Size;
-            int x0 = shape.getCentre().X - shape.Size;
-            int x1 = shape.getCentre().X + shape.Size;
+
             switch (key)
             {
                 //Уменьшает фигуру
                 case Keys.OemMinus:
                     {
-                        if (shape.Size - sizeChange > 0)
+                        if (shape.TryResize(-sizeChange, g))
                             shape.Resize(-sizeChange);
 
                         break;
@@ -219,7 +237,7 @@ namespace OOP4Lab
                 //Увеличиваем фигуру
                 case Keys.Oemplus:
                     {
-                        if (shape.TryMove(sizeChange, sizeChange, g))
+                        if (shape.TryResize(sizeChange, g))
                             shape.Resize(sizeChange);
 
                         break;
