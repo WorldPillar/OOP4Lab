@@ -37,10 +37,11 @@
             this.стрелкиДвижениеФигурыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выберитеФигуруToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.circleMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.triangleMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.squareMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.треугольникToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fiveMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.sixMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.отрезокToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.polygonMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.chooseColor = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.drawBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -105,10 +106,11 @@
             // 
             this.выберитеФигуруToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.circleMenu,
+            this.triangleMenu,
             this.squareMenu,
-            this.треугольникToolStripMenuItem,
-            this.отрезокToolStripMenuItem,
-            this.polygonMenu});
+            this.fiveMenu,
+            this.sixMenu,
+            this.отрезокToolStripMenuItem});
             this.выберитеФигуруToolStripMenuItem.Name = "выберитеФигуруToolStripMenuItem";
             this.выберитеФигуруToolStripMenuItem.Size = new System.Drawing.Size(116, 20);
             this.выберитеФигуруToolStripMenuItem.Text = "Выберите фигуру";
@@ -119,36 +121,43 @@
             this.circleMenu.CheckOnClick = true;
             this.circleMenu.CheckState = System.Windows.Forms.CheckState.Checked;
             this.circleMenu.Name = "circleMenu";
-            this.circleMenu.Size = new System.Drawing.Size(234, 22);
+            this.circleMenu.Size = new System.Drawing.Size(180, 22);
             this.circleMenu.Text = "Круг";
+            // 
+            // triangleMenu
+            // 
+            this.triangleMenu.CheckOnClick = true;
+            this.triangleMenu.Name = "triangleMenu";
+            this.triangleMenu.Size = new System.Drawing.Size(180, 22);
+            this.triangleMenu.Text = "Треугольник";
             // 
             // squareMenu
             // 
             this.squareMenu.CheckOnClick = true;
             this.squareMenu.Name = "squareMenu";
-            this.squareMenu.Size = new System.Drawing.Size(234, 22);
+            this.squareMenu.Size = new System.Drawing.Size(180, 22);
             this.squareMenu.Text = "Квадрат";
             // 
-            // треугольникToolStripMenuItem
+            // fiveMenu
             // 
-            this.треугольникToolStripMenuItem.CheckOnClick = true;
-            this.треугольникToolStripMenuItem.Name = "треугольникToolStripMenuItem";
-            this.треугольникToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-            this.треугольникToolStripMenuItem.Text = "Треугольник";
+            this.fiveMenu.CheckOnClick = true;
+            this.fiveMenu.Name = "fiveMenu";
+            this.fiveMenu.Size = new System.Drawing.Size(180, 22);
+            this.fiveMenu.Text = "Пятиугольник";
+            // 
+            // sixMenu
+            // 
+            this.sixMenu.CheckOnClick = true;
+            this.sixMenu.Name = "sixMenu";
+            this.sixMenu.Size = new System.Drawing.Size(180, 22);
+            this.sixMenu.Text = "Шестиугольник";
             // 
             // отрезокToolStripMenuItem
             // 
             this.отрезокToolStripMenuItem.CheckOnClick = true;
             this.отрезокToolStripMenuItem.Name = "отрезокToolStripMenuItem";
-            this.отрезокToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.отрезокToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.отрезокToolStripMenuItem.Text = "Отрезок";
-            // 
-            // polygonMenu
-            // 
-            this.polygonMenu.CheckOnClick = true;
-            this.polygonMenu.Name = "polygonMenu";
-            this.polygonMenu.Size = new System.Drawing.Size(234, 22);
-            this.polygonMenu.Text = "Правильный многоугольник";
             // 
             // chooseColor
             // 
@@ -188,9 +197,10 @@
         private System.Windows.Forms.ToolStripMenuItem выберитеФигуруToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem circleMenu;
         private System.Windows.Forms.ToolStripMenuItem squareMenu;
-        private System.Windows.Forms.ToolStripMenuItem треугольникToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem triangleMenu;
         private System.Windows.Forms.ToolStripMenuItem отрезокToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem polygonMenu;
+        private System.Windows.Forms.ToolStripMenuItem fiveMenu;
+        private System.Windows.Forms.ToolStripMenuItem sixMenu;
     }
 }
 

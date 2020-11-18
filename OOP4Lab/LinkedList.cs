@@ -38,9 +38,9 @@ namespace OOP4Lab
         //Является ли текущий элемент концом списка
         public bool eol() { return current == null; }
         //Устанавливает текущий элемент в начало списка
-        public void front() { current = root; }
+        public Node front() { return current = root; }
         //Устанавливает текущий элемент в конец списка
-        public void back() { current = tail; }
+        public Node back() { return current = tail; }
         //Устанавливает текущее значение на следующее
         public void next()
         {
@@ -146,6 +146,18 @@ namespace OOP4Lab
             } while (delRoot != null);
             count = 0;
         }
+        public Shape getRoot()
+        {
+            if (root == null)
+                return null;
+            return root.getObj;
+        }
+        public Shape getTail()
+        {
+            if (tail == null)
+                return null;
+            return tail.getObj;
+        }
         //Возвращает текущий объект, хранящийся в Node
         public Shape getObject()
         {
@@ -199,18 +211,17 @@ namespace OOP4Lab
     //Абстрактный класс для хранения различных объектов
     abstract class Shape
     {
-        protected int minSize = 5;
         protected HatchBrush brush;
 
-        public abstract int getMinSize { get; }
         public abstract HatchBrush hBrush { set; get; }
         public abstract int Size { get; }
         public abstract Point getCentre();
         public abstract bool Current { get; set; }
         public abstract void Move(int x, int y);
         public abstract void Resize(int size);
+        public abstract bool TryMove(int dx, int dy, Graphics g);
         public abstract bool inShape(int x, int y);
-        public abstract void Draw(Bitmap bitmapDraw);
+        public abstract void Draw(Graphics g);
     }
     class CCircle : Shape
     {
@@ -218,6 +229,7 @@ namespace OOP4Lab
         protected int y;
         protected int r = 30;
         protected bool current;
+        protected GraphicsPath graph;
         private CCircle()
         {
             x = 0;
@@ -231,6 +243,7 @@ namespace OOP4Lab
         }
         public CCircle(int x, int y)
         {
+            graph = new GraphicsPath();
             this.x = x;
             this.y = y;
             current = true;
@@ -238,16 +251,19 @@ namespace OOP4Lab
                 HatchStyle.Cross,
                 Color.PaleVioletRed,
                 Color.Black);
+
+            graph.AddEllipse(this.x - r, this.y - r, r * 2, r * 2);
         }
 
         public override void Move(int dx, int dy)
         {
             x += dx;
             y += dy;
+            Update();
         }
         public override bool inShape(int x, int y)
         {
-            if (Math.Sqrt(Math.Pow(this.x - x, 2) + Math.Pow(this.y - y, 2)) <= r)
+            if (graph.IsVisible(x, y))
             {
                 current = true;
                 return true;
@@ -255,29 +271,43 @@ namespace OOP4Lab
             return false;
         }
 
-        public override void Draw(Bitmap bitmapDraw)
+        public override void Draw(Graphics g)
         {
-            Graphics g = Graphics.FromImage(bitmapDraw);
-
             if (current)
-                g.FillEllipse(brush, x - r, y - r, r * 2, r * 2);
+                g.FillPath(brush, graph);
             else
-                g.FillEllipse(new SolidBrush(brush.BackgroundColor), x - r, y - r, r * 2, r * 2);
+                g.FillPath(new SolidBrush(brush.BackgroundColor), graph);
         }
 
         public override void Resize(int size)
         {
             r += size;
+            Update();
+        }
+
+        protected virtual void Update()
+        {
+            graph.Reset();
+            graph.AddEllipse(this.x - r, this.y - r, r * 2, r * 2);
+        }
+
+        public override bool TryMove(int dx, int dy, Graphics g)
+        {
+            PointF[] region = new PointF[4];
+            region[0] = new PointF(x + dx, y - r + dy);
+            region[1] = new PointF(x - r + dx, y + dy);
+            region[2] = new PointF(x + dx, y + r + dy);
+            region[3] = new PointF(x + r + dx, y + dy);
+            foreach (var it in region)
+                if (it.X < 0 || it.Y < 0
+                    || it.X > g.VisibleClipBounds.Width || it.Y > g.VisibleClipBounds.Height)
+                    return false;
+            return true;
         }
 
         public override int Size
         {
             get => r;
-        }
-
-        public override int getMinSize
-        {
-            get => minSize;
         }
 
         public override Point getCentre()
@@ -347,10 +377,8 @@ namespace OOP4Lab
             return false;
         }
 
-        public override void Draw(Bitmap bitmapDraw)
+        public override void Draw(Graphics g)
         {
-            Graphics g = Graphics.FromImage(bitmapDraw);
-
             if (current)
                 g.FillRectangle(brush, x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
             else
@@ -362,14 +390,23 @@ namespace OOP4Lab
             hWidth += size;
         }
 
+        public override bool TryMove(int dx, int dy, Graphics g)
+        {
+            PointF[] region = new PointF[4];
+            region[0] = new PointF(x + dx, y + hWidth + dy);
+            region[1] = new PointF(x - hWidth + dx, y + dy);
+            region[2] = new PointF(x + dx, y - hWidth + dy);
+            region[3] = new PointF(x + hWidth + dx, y + dy);
+            foreach (var it in region)
+                if (it.X < 0 || it.Y < 0
+                    || it.X > g.VisibleClipBounds.Width || it.Y > g.VisibleClipBounds.Height)
+                    return false;
+            return true;
+        }
+
         public override int Size
         {
             get => hWidth;
-        }
-
-        public override int getMinSize
-        {
-            get => minSize;
         }
 
         public override bool Current
@@ -402,6 +439,7 @@ namespace OOP4Lab
         private PointF[] points;
         public CPolygon(int x, int y, int amount) : base(x, y)
         {
+            graph = new GraphicsPath();
             points = new PointF[amount];
 
             double angle = Math.PI*2 / amount;
@@ -411,27 +449,51 @@ namespace OOP4Lab
                 points[i] = new PointF((float)Math.Cos((-Math.PI / 2) + angle * i) * r + x,
                     (float)Math.Sin((-Math.PI / 2) + angle * i) * r + y);
             }
+            graph.AddPolygon(points);
         }
 
-        public override void Draw(Bitmap bitmapDraw)
+        public override void Move(int dx, int dy)
         {
-            Graphics g = Graphics.FromImage(bitmapDraw);
+            x += dx;
+            y += dy;
 
-            if (current)
-                g.FillPolygon(brush, points);
-            else
-                g.FillPolygon(new SolidBrush(brush.BackgroundColor), points);
-        }
-
-        public override bool inShape(int x, int y)
-        {
-            if (Math.Sqrt(Math.Pow(this.x - x, 2) + Math.Pow(this.y - y, 2)) <= r)
+            for (int i = 0; i < points.Length; ++i)
             {
-                current = true;
-                return true;
+                points[i].X += dx;
+                points[i].Y += dy;
             }
-            return false;
+            Update();
         }
 
+        public override void Resize(int size)
+        {
+            r += size;
+
+            double angle = Math.PI * 2 / points.Length;
+
+            for (int i = 0; i < points.Length; ++i)
+            {
+                points[i].X = (float)Math.Cos((-Math.PI / 2) + angle * i) * r + x;
+                points[i].Y = (float)Math.Sin((-Math.PI / 2) + angle * i) * r + y;
+            }
+            Update();
+        }
+
+        protected override void Update()
+        {
+            graph.Reset();
+            graph.AddPolygon(points);
+        }
+
+        public override bool TryMove(int dx, int dy, Graphics g)
+        {
+            foreach (var it in points)
+            {
+                if (it.X + dx < 0 || it.Y + dy < 0
+                    || it.X + dx > g.VisibleClipBounds.Width || it.Y + dy > g.VisibleClipBounds.Height)
+                    return false;
+            }
+            return true;
+        }
     }
 }

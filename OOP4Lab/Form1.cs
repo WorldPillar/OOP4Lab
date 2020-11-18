@@ -33,7 +33,7 @@ namespace OOP4Lab
             g.Clear(Color.White);
             drawBox.Image = bitmapDraw;
 
-            model = new Model(drawBox.Width, drawBox.Height, chooseColor);
+            model = new Model(drawBox.Width, drawBox.Height, chooseColor, g);
         }
 
         public bool controlPressed()
@@ -50,7 +50,7 @@ namespace OOP4Lab
             Mylist.front();
             while (!Mylist.eol())
             {
-                Mylist.getObject().Draw(bitmapDraw);
+                Mylist.getObject().Draw(g);
                 Mylist.next();
             }
             //Копируем изображение из буфера в drawBox
@@ -105,10 +105,22 @@ namespace OOP4Lab
                     {
                         Mylist.push_back(new CRectangle(e.X, e.Y));
                     }
-                    else if (polygonMenu.Checked)
+                    else if (triangleMenu.Checked)
                     {
                         Mylist.push_back(new CPolygon(e.X, e.Y, 3));
                     }
+                    else if (fiveMenu.Checked)
+                    {
+                        Mylist.push_back(new CPolygon(e.X, e.Y, 5));
+                    }
+                    else if (sixMenu.Checked)
+                    {
+                        Mylist.push_back(new CPolygon(e.X, e.Y, 6));
+                    }
+
+                    if (!Mylist.getTail().TryMove(0, 0, g))
+                        Mylist.erase(Mylist.back());
+
                     Draw();
                 }
                 else
@@ -160,12 +172,18 @@ namespace OOP4Lab
     {
         int width;
         int height;
+        int sizeChange;
+        int move;
         ColorDialog colorChoose;
-        public Model(int width, int height, ColorDialog color)
+        Graphics g;
+        public Model(int width, int height, ColorDialog color, Graphics g)
         {
             this.width = width;
             this.height = height;
+            sizeChange = 5;
+            move = 5;
             colorChoose = color;
+            this.g = g;
         }
         public void ShapeAct(Keys key, Shape shape)
         {
@@ -193,72 +211,49 @@ namespace OOP4Lab
                 //Уменьшает фигуру
                 case Keys.OemMinus:
                     {
-                        if (shape.getMinSize <= shape.Size - 5)
-                            shape.Resize(-5);
+                        if (shape.Size - sizeChange > 0)
+                            shape.Resize(-sizeChange);
+
                         break;
                     }
                 //Увеличиваем фигуру
                 case Keys.Oemplus:
                     {
-                        if (x0 - 5 < 0 || y0 - 5 < 0 || x1 + 5 > width || y1 + 5 > height)
-                            return;
-                        shape.Resize(5);
+                        if (shape.TryMove(sizeChange, sizeChange, g))
+                            shape.Resize(sizeChange);
+
                         break;
                     }
                 //Двигаем фигуру вниз
                 case Keys.Down:
                     {
-                        if (y1 + 5 > height)
-                        {
-                            if (y1 < height)
-                                shape.Move(0, height - y1);
+                        if(shape.TryMove(0, move, g))
+                            shape.Move(0, move);
 
-                            return;
-                        }
-
-                        shape.Move(0, 5);
                         break;
                     }
                 //Двигаем фигуру вверх
                 case Keys.Up:
                     {
-                        if (y0 - 5 < 0)
-                        {
-                            if (y0 > 0)
-                                shape.Move(0, -y0);
+                        if (shape.TryMove(0, -move, g))
+                            shape.Move(0, -move);
 
-                            return;
-                        }
-
-                        shape.Move(0, -5);
                         break;
                     }
                 //Двигаем фигуру влево
                 case Keys.Left:
                     {
-                        if (x0 - 5 < 0)
-                        {
-                            if (x0 > 0)
-                                shape.Move(-x0, 0);
+                        if (shape.TryMove(-move, 0, g))
+                            shape.Move(-move, 0);
 
-                            return;
-                        }
-
-                        shape.Move(-5, 0);
                         break;
                     }
                 //Двигаем фигуру вправо
                 case Keys.Right:
                     {
-                        if (x1 + 5 > width)
-                        {
-                            if (x1 < width)
-                                shape.Move(width - x1, 0);
+                        if (shape.TryMove(move, 0, g))
+                            shape.Move(move, 0);
 
-                            return;
-                        }
-
-                        shape.Move(5, 0);
                         break;
                     }
             }
