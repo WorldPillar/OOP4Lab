@@ -42,7 +42,6 @@
             this.fiveMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.sixMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.starMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.отрезокToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chooseColor = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.drawBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -111,8 +110,7 @@
             this.squareMenu,
             this.fiveMenu,
             this.sixMenu,
-            this.starMenu,
-            this.отрезокToolStripMenuItem});
+            this.starMenu});
             this.chooseShape.Name = "chooseShape";
             this.chooseShape.Size = new System.Drawing.Size(116, 20);
             this.chooseShape.Text = "Выберите фигуру";
@@ -167,14 +165,6 @@
             this.starMenu.Text = "Звезда";
             this.starMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
-            // отрезокToolStripMenuItem
-            // 
-            this.отрезокToolStripMenuItem.CheckOnClick = true;
-            this.отрезокToolStripMenuItem.Name = "отрезокToolStripMenuItem";
-            this.отрезокToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.отрезокToolStripMenuItem.Text = "Отрезок";
-            this.отрезокToolStripMenuItem.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
-            // 
             // chooseColor
             // 
             this.chooseColor.AnyColor = true;
@@ -214,7 +204,6 @@
         private System.Windows.Forms.ToolStripMenuItem circleMenu;
         private System.Windows.Forms.ToolStripMenuItem squareMenu;
         private System.Windows.Forms.ToolStripMenuItem triangleMenu;
-        private System.Windows.Forms.ToolStripMenuItem отрезокToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fiveMenu;
         private System.Windows.Forms.ToolStripMenuItem sixMenu;
         private System.Windows.Forms.ToolStripMenuItem starMenu;

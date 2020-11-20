@@ -33,7 +33,7 @@ namespace OOP4Lab
             g.Clear(Color.White);
             drawBox.Image = bitmapDraw;
 
-            model = new Model(drawBox.Width, drawBox.Height, chooseColor, g);
+            model = new Model(chooseColor, g);
         }
 
         public bool controlPressed()
@@ -57,6 +57,7 @@ namespace OOP4Lab
             drawBox.Image = bitmapDraw;
         }
 
+        //Обнуление текущего значения у всех объектов
         private void allFalse()
         {
             Mylist.front();
@@ -97,26 +98,32 @@ namespace OOP4Lab
             {
                 if (!inShape(e.X, e.Y))
                 {
+                    //Добавление круга
                     if (circleMenu.Checked)
                     {
                         Mylist.push_back(new CCircle(e.X, e.Y));
                     }
+                    //Добавление квадрата
                     else if (squareMenu.Checked)
                     {
                         Mylist.push_back(new CRectangle(e.X, e.Y));
                     }
+                    //Добавление треугольника
                     else if (triangleMenu.Checked)
                     {
                         Mylist.push_back(new CPolygon(e.X, e.Y, 3));
                     }
+                    //Добавление пятиугольника
                     else if (fiveMenu.Checked)
                     {
                         Mylist.push_back(new CPolygon(e.X, e.Y, 5));
                     }
+                    //Добавление шестиугольника
                     else if (sixMenu.Checked)
                     {
                         Mylist.push_back(new CPolygon(e.X, e.Y, 6));
                     }
+                    //Добавление звезды
                     else if (starMenu.Checked)
                     {
                         Mylist.push_back(new CStar(e.X, e.Y));
@@ -138,6 +145,7 @@ namespace OOP4Lab
         //Событие при нажатии клавиши
         private void Paint_KeyDown(object sender, KeyEventArgs e)
         {
+            //Выбор первого выделенного объекта
             Mylist.front();
             while (!Mylist.eol())
             {
@@ -165,21 +173,14 @@ namespace OOP4Lab
                 Draw();
             }
 
+            //Вызов Модели для выполнения действий над выбранной фигурой
             if (!Mylist.eol() && Mylist.getObject() != null)
                 model.ShapeAct(e.KeyCode, Mylist.getObject());
 
             Draw();
         }
 
-        private void ToolStripMenueItem_MouseDown(object sender, MouseEventArgs e)
-        {
-            var thisTsmi = (ToolStripMenuItem)sender;
-            foreach (ToolStripMenuItem tsmi in thisTsmi.GetCurrentParent().Items)
-            {
-                tsmi.Checked = thisTsmi == tsmi;
-            }
-        }
-
+        //Обновление меню. Снятие выбранности у предыдущего элемента
         private void ToolStripMenueItem_Click(object sender, EventArgs e)
         {
             var thisTsmi = (ToolStripMenuItem)sender;
@@ -193,16 +194,12 @@ namespace OOP4Lab
     //Класс Model, который по заданному параметру изменяет фигуру
     class Model
     {
-        int width;
-        int height;
         int sizeChange;
         int move;
         ColorDialog colorChoose;
         Graphics g;
-        public Model(int width, int height, ColorDialog color, Graphics g)
+        public Model(ColorDialog color, Graphics g)
         {
-            this.width = width;
-            this.height = height;
             sizeChange = 5;
             move = 5;
             colorChoose = color;
@@ -210,20 +207,6 @@ namespace OOP4Lab
         }
         public void ShapeAct(Keys key, Shape shape)
         {
-            if (key == Keys.C)
-            {
-                //Сохраняем цвет фигуры
-                colorChoose.Color = shape.hBrush.BackgroundColor;
-                //Вызываем color dialog
-                colorChoose.ShowDialog();
-
-                //Задаём кисть с выбранным цветом
-                shape.hBrush = new HatchBrush(HatchStyle.Cross,
-                Color.PaleVioletRed, colorChoose.Color);
-
-                return;
-            }
-
             switch (key)
             {
                 //Уменьшает фигуру
@@ -272,6 +255,19 @@ namespace OOP4Lab
                         if (shape.TryMove(move, 0, g))
                             shape.Move(move, 0);
 
+                        break;
+                    }
+                //Меняем цвет у фигуры
+                case Keys.C:
+                    {
+                        //Сохраняем цвет фигуры
+                        colorChoose.Color = shape.hBrush.BackgroundColor;
+                        //Вызываем color dialog
+                        colorChoose.ShowDialog();
+
+                        //Задаём кисть с выбранным цветом
+                        shape.hBrush = new HatchBrush(HatchStyle.Cross,
+                        Color.PaleVioletRed, colorChoose.Color);
                         break;
                     }
             }

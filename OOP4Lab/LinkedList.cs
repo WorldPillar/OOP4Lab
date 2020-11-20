@@ -213,15 +213,24 @@ namespace OOP4Lab
     {
         protected HatchBrush brush;
 
+        //геттеры и сеттеры для кисти
         public abstract HatchBrush hBrush { set; get; }
+        //Получение размера
         public abstract int Size { get; }
+        //Получение центра
         public abstract Point getCentre();
         public abstract bool Current { get; set; }
+        //Смещение фигуры на заданные координаты
         public abstract void Move(int x, int y);
+        //Изменение фигуры на заданный размер
         public abstract void Resize(int size);
+        //Попытка двигать фигуру в форме
         public abstract bool TryMove(int dx, int dy, Graphics g);
+        //Попытка изменить размер фигуры в форме
         public abstract bool TryResize(int d, Graphics g);
+        //Проверка нахождения курсора при нажатии в форме
         public abstract bool inShape(int x, int y);
+        //Отрисовка фигуры
         public abstract void Draw(Graphics g);
     }
     class CCircle : Shape
@@ -270,7 +279,6 @@ namespace OOP4Lab
             }
             return false;
         }
-
         public override void Draw(Graphics g)
         {
             Update();
@@ -279,19 +287,17 @@ namespace OOP4Lab
             else
                 g.FillPath(new SolidBrush(brush.BackgroundColor), graph);
         }
-
         public override void Resize(int size)
         {
             r += size;
             Update();
         }
-
+        //Обновление фигуры в graphicpath
         protected virtual void Update()
         {
             graph.Reset();
             graph.AddEllipse(this.x - r, this.y - r, r * 2, r * 2);
         }
-
         public override bool TryMove(int dx, int dy, Graphics g)
         {
             PointF[] region = new PointF[4];
@@ -301,11 +307,11 @@ namespace OOP4Lab
             region[3] = new PointF(x + r + dx, y + dy);
             foreach (var it in region)
                 if (it.X < 0 || it.Y < 0
-                    || it.X > g.VisibleClipBounds.Width || it.Y > g.VisibleClipBounds.Height)
+                    || it.X > g.VisibleClipBounds.Width
+                    || it.Y > g.VisibleClipBounds.Height)
                     return false;
             return true;
         }
-
         public override bool TryResize(int d, Graphics g)
         {
             if (r + d <= 0)
@@ -316,28 +322,25 @@ namespace OOP4Lab
                 int y1 = y + r + d;
                 int x0 = x - r - d;
                 int x1 = x + r + d;
-                if (x0 < 0 || y0 < 0 || x1 > g.VisibleClipBounds.Width || y1 > g.VisibleClipBounds.Height)
+                if (x0 < 0 || y0 < 0 || x1 > g.VisibleClipBounds.Width
+                    || y1 > g.VisibleClipBounds.Height)
                     return false;
             }
             return true;
         }
-
         public override int Size
         {
             get => r;
         }
-
         public override Point getCentre()
         {
             return new Point(x, y);
         }
-
         public override HatchBrush hBrush
         {
             set => brush = value;
             get => brush;
         }
-
         public override bool Current
         {
             get => current;
@@ -386,7 +389,8 @@ namespace OOP4Lab
         }
         public override bool inShape(int x, int y)
         {
-            if (Math.Abs(this.x - x) <= hWidth && Math.Abs(this.y - y) <= hWidth)
+            if (Math.Abs(this.x - x) <= hWidth
+                && Math.Abs(this.y - y) <= hWidth)
             {
                 current = true;
                 return true;
@@ -397,9 +401,11 @@ namespace OOP4Lab
         public override void Draw(Graphics g)
         {
             if (current)
-                g.FillRectangle(brush, x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
+                g.FillRectangle(brush, x - hWidth,
+                    y - hWidth, hWidth * 2, hWidth * 2);
             else
-                g.FillRectangle(new SolidBrush(brush.BackgroundColor), x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
+                g.FillRectangle(new SolidBrush(brush.BackgroundColor),
+                    x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
         }
 
         public override void Resize(int size)
@@ -409,6 +415,7 @@ namespace OOP4Lab
 
         public override bool TryMove(int dx, int dy, Graphics g)
         {
+            //Попытка двигать прямоугольник относительно 4-ёх его точек
             PointF[] region = new PointF[4];
             region[0] = new PointF(x + dx, y + hWidth + dy);
             region[1] = new PointF(x - hWidth + dx, y + dy);
@@ -416,22 +423,26 @@ namespace OOP4Lab
             region[3] = new PointF(x + hWidth + dx, y + dy);
             foreach (var it in region)
                 if (it.X < 0 || it.Y < 0
-                    || it.X > g.VisibleClipBounds.Width || it.Y > g.VisibleClipBounds.Height)
+                    || it.X > g.VisibleClipBounds.Width
+                    || it.Y > g.VisibleClipBounds.Height)
                     return false;
             return true;
         }
 
         public override bool TryResize(int d, Graphics g)
         {
+            //Если фигура меньше нуля, изменение размера запрещается
             if (hWidth + d <= 0)
                 return false;
             else
             {
+                //Если точка фигуры выходит на поле, изменение запрещается
                 int y0 = y - hWidth - d;
                 int y1 = y + hWidth + d;
                 int x0 = x - hWidth - d;
                 int x1 = x + hWidth + d;
-                if (x0 < 0 || y0 < 0 || x1 > g.VisibleClipBounds.Width || y1 > g.VisibleClipBounds.Height)
+                if (x0 < 0 || y0 < 0 || x1 > g.VisibleClipBounds.Width
+                    || y1 > g.VisibleClipBounds.Height)
                     return false;
             }
             return true;
@@ -441,24 +452,20 @@ namespace OOP4Lab
         {
             get => hWidth;
         }
-
         public override bool Current
         {
             get => current;
             set => current = value;
         }
-
         public override Point getCentre()
         {
             return new Point(x, y);
         }
-
         public override HatchBrush hBrush
         {
             set => brush = value;
             get => brush;
         }
-
         ~CRectangle()
         {
             x = 0;
@@ -469,6 +476,7 @@ namespace OOP4Lab
 
     class CPolygon : CCircle
     {
+        //Вершины многоугольника
         protected PointF[] points;
 
         public CPolygon(int x, int y, int amount) : base(x, y)
@@ -478,10 +486,13 @@ namespace OOP4Lab
             CreatPolygon();
         }
 
+        //создание многоугольника
         protected virtual void CreatPolygon()
         {
+            //Угол для вершины
             double angle = Math.PI * 2 / points.Length;
 
+            //Добавление вершины в круге
             for (int i = 0; i < points.Length; ++i)
             {
                 points[i] = new PointF((float)Math.Cos((-Math.PI / 2) + angle * i) * r + x,
@@ -506,6 +517,7 @@ namespace OOP4Lab
         {
             r += size;
 
+            //Каждая точка перемещается относительно своего угла.
             double angle = Math.PI * 2 / points.Length;
 
             for (int i = 0; i < points.Length; ++i)
@@ -524,10 +536,12 @@ namespace OOP4Lab
 
         public override bool TryMove(int dx, int dy, Graphics g)
         {
+            //Проверка выхода каждой точки из поля
             foreach (var it in points)
             {
                 if (it.X + dx < 0 || it.Y + dy < 0
-                    || it.X + dx > g.VisibleClipBounds.Width || it.Y + dy > g.VisibleClipBounds.Height)
+                    || it.X + dx > g.VisibleClipBounds.Width
+                    || it.Y + dy > g.VisibleClipBounds.Height)
                     return false;
             }
             return true;
@@ -541,11 +555,13 @@ namespace OOP4Lab
             {
                 foreach (var it in points)
                 {
+                    //Если точка фигуры выходит на поле, изменение запрещается
                     float y0 = it.Y - d;
                     float y1 = it.Y + d;
                     float x0 = it.X - d;
                     float x1 = it.X + d;
-                    if (x0 < 0 || y0 < 0 || x1 > g.VisibleClipBounds.Width || y1 > g.VisibleClipBounds.Height)
+                    if (x0 < 0 || y0 < 0 || x1 > g.VisibleClipBounds.Width
+                        || y1 > g.VisibleClipBounds.Height)
                         return false;
                 }
             }
@@ -555,20 +571,24 @@ namespace OOP4Lab
 
     class CStar : CPolygon
     {
+        //Создание звезды
         public CStar(int x, int y) : base(x, y, 10)
         {
             graph = new GraphicsPath();
         }
 
+        //Переопределение создания многоугольника
         protected override void CreatPolygon()
         {
             double angle = Math.PI * 2 / 10;
 
             for (int i = 0; i < 10; ++i)
             {
+                //Если чётная вершина, то она лежит на окружности
                 if (i % 2 == 0)
                     points[i] = new PointF((float)Math.Cos((-Math.PI / 2) + angle * i) * r + x,
                     (float)Math.Sin((-Math.PI / 2) + angle * i) * r + y);
+                //Иначе лежит в окружности
                 else
                     points[i] = new PointF((float)Math.Cos((-Math.PI / 2) + angle * i) * (r / 2) + x,
                     (float)Math.Sin((-Math.PI / 2) + angle * i) * (r / 2) + y);
@@ -583,6 +603,8 @@ namespace OOP4Lab
 
             for (int i = 0; i < points.Length; ++i)
             {
+                //Если чётная вершина, то смещаем относительно радиуса
+                //Иначе смещаем относительно половины радиуса
                 float rad = r;
                 if (i % 2 == 0)
                     rad = r;
