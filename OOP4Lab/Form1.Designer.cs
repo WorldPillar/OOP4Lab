@@ -42,25 +42,39 @@
             this.fiveMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.sixMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.starMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.createMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.MakeGroup = new System.Windows.Forms.ToolStripMenuItem();
+            this.DeleteGroupMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.chooseColor = new System.Windows.Forms.ColorDialog();
+            this.сохранитьОбъектыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.загрузитьОбъектыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.drawBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // drawBox
             // 
+            this.drawBox.BackColor = System.Drawing.Color.White;
             this.drawBox.Location = new System.Drawing.Point(0, 27);
             this.drawBox.Name = "drawBox";
             this.drawBox.Size = new System.Drawing.Size(1184, 523);
             this.drawBox.TabIndex = 0;
             this.drawBox.TabStop = false;
-            this.drawBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ShapeCreate);
+            this.drawBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.drawBoxClick);
             // 
             // menuStrip1
             // 
+            this.menuStrip1.BackColor = System.Drawing.Color.MediumTurquoise;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.оПрограммеToolStripMenuItem,
-            this.chooseShape});
+            this.chooseShape,
+            this.createMenu,
+            this.groupMenu,
+            this.MakeGroup,
+            this.DeleteGroupMenu,
+            this.сохранитьОбъектыToolStripMenuItem,
+            this.загрузитьОбъектыToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1184, 24);
@@ -69,6 +83,7 @@
             // 
             // оПрограммеToolStripMenuItem
             // 
+            this.оПрограммеToolStripMenuItem.BackColor = System.Drawing.Color.MediumTurquoise;
             this.оПрограммеToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.сВызовColorDialogToolStripMenuItem,
             this.увеличениеФигурыToolStripMenuItem,
@@ -104,6 +119,8 @@
             // 
             // chooseShape
             // 
+            this.chooseShape.BackColor = System.Drawing.Color.MediumTurquoise;
+            this.chooseShape.CheckOnClick = true;
             this.chooseShape.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.circleMenu,
             this.triangleMenu,
@@ -112,8 +129,8 @@
             this.sixMenu,
             this.starMenu});
             this.chooseShape.Name = "chooseShape";
-            this.chooseShape.Size = new System.Drawing.Size(116, 20);
-            this.chooseShape.Text = "Выберите фигуру";
+            this.chooseShape.Size = new System.Drawing.Size(109, 20);
+            this.chooseShape.Text = "Выбрать фигуру";
             // 
             // circleMenu
             // 
@@ -165,15 +182,63 @@
             this.starMenu.Text = "Звезда";
             this.starMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
+            // createMenu
+            // 
+            this.createMenu.BackColor = System.Drawing.Color.MediumTurquoise;
+            this.createMenu.Name = "createMenu";
+            this.createMenu.Size = new System.Drawing.Size(105, 20);
+            this.createMenu.Text = "Создать фигуру";
+            this.createMenu.Click += new System.EventHandler(this.ActiveActionChange);
+            // 
+            // groupMenu
+            // 
+            this.groupMenu.BackColor = System.Drawing.Color.MediumTurquoise;
+            this.groupMenu.Name = "groupMenu";
+            this.groupMenu.Size = new System.Drawing.Size(133, 20);
+            this.groupMenu.Text = "Выделить несколько";
+            this.groupMenu.Click += new System.EventHandler(this.ActiveActionChange);
+            // 
+            // MakeGroup
+            // 
+            this.MakeGroup.BackColor = System.Drawing.Color.MediumTurquoise;
+            this.MakeGroup.Name = "MakeGroup";
+            this.MakeGroup.Size = new System.Drawing.Size(103, 20);
+            this.MakeGroup.Text = "Сгруппировать";
+            this.MakeGroup.Visible = false;
+            this.MakeGroup.Click += new System.EventHandler(this.MakeGroup_Click);
+            // 
+            // DeleteGroupMenu
+            // 
+            this.DeleteGroupMenu.BackColor = System.Drawing.Color.MediumTurquoise;
+            this.DeleteGroupMenu.Name = "DeleteGroupMenu";
+            this.DeleteGroupMenu.Size = new System.Drawing.Size(159, 20);
+            this.DeleteGroupMenu.Text = "Разгруппировать фигуры";
+            this.DeleteGroupMenu.Click += new System.EventHandler(this.DeleteGroupMenu_Click);
+            // 
             // chooseColor
             // 
             this.chooseColor.AnyColor = true;
             this.chooseColor.SolidColorOnly = true;
             // 
+            // сохранитьОбъектыToolStripMenuItem
+            // 
+            this.сохранитьОбъектыToolStripMenuItem.BackColor = System.Drawing.Color.MediumTurquoise;
+            this.сохранитьОбъектыToolStripMenuItem.Name = "сохранитьОбъектыToolStripMenuItem";
+            this.сохранитьОбъектыToolStripMenuItem.Size = new System.Drawing.Size(128, 20);
+            this.сохранитьОбъектыToolStripMenuItem.Text = "Сохранить объекты";
+            // 
+            // загрузитьОбъектыToolStripMenuItem
+            // 
+            this.загрузитьОбъектыToolStripMenuItem.BackColor = System.Drawing.Color.MediumTurquoise;
+            this.загрузитьОбъектыToolStripMenuItem.Name = "загрузитьОбъектыToolStripMenuItem";
+            this.загрузитьОбъектыToolStripMenuItem.Size = new System.Drawing.Size(123, 20);
+            this.загрузитьОбъектыToolStripMenuItem.Text = "Загрузить объекты";
+            // 
             // PaintBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1184, 550);
             this.Controls.Add(this.drawBox);
             this.Controls.Add(this.menuStrip1);
@@ -207,6 +272,12 @@
         private System.Windows.Forms.ToolStripMenuItem fiveMenu;
         private System.Windows.Forms.ToolStripMenuItem sixMenu;
         private System.Windows.Forms.ToolStripMenuItem starMenu;
+        private System.Windows.Forms.ToolStripMenuItem groupMenu;
+        private System.Windows.Forms.ToolStripMenuItem DeleteGroupMenu;
+        private System.Windows.Forms.ToolStripMenuItem MakeGroup;
+        private System.Windows.Forms.ToolStripMenuItem createMenu;
+        private System.Windows.Forms.ToolStripMenuItem сохранитьОбъектыToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem загрузитьОбъектыToolStripMenuItem;
     }
 }
 

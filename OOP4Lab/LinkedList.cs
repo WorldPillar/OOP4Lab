@@ -208,8 +208,13 @@ namespace OOP4Lab
         }
     }
 
+    //Абстрактный класс для хранения различных объектов
     abstract class AbstractShape
     {
+        protected HatchBrush brush;
+        //геттеры и сеттеры для кисти
+        public abstract HatchBrush hBrush { get; }
+        public abstract bool Current { get; set; }
         //Смещение фигуры на заданные координаты
         public abstract void Move(int x, int y);
         //Изменение фигуры на заданный размер
@@ -222,35 +227,34 @@ namespace OOP4Lab
         public abstract bool inShape(int x, int y);
         //Отрисовка фигуры
         public abstract void Draw(Graphics g);
-    }
 
-    //Абстрактный класс для хранения различных объектов
-    abstract class Shape : AbstractShape
-    {
-        protected HatchBrush brush;
-
-        //геттеры и сеттеры для кисти
-        public abstract HatchBrush hBrush { set; get; }
-        //Получение размера
-        public abstract int Size { get; }
-        //Получение центра
-        public abstract Point getCentre();
-        public abstract bool Current { get; set; }
+        public abstract void ColorChange(HatchBrush hatch);
     }
 
     class CGroup : AbstractShape
     {
         LinkedList shapes;
+        protected bool current;
 
+        public CGroup()
+        {
+            shapes = new LinkedList();
+            current = true;
+
+            brush = new HatchBrush(
+                HatchStyle.Cross,
+                Color.PaleVioletRed,
+                Color.Black);
+        }
 
         public void Add(AbstractShape newLeaf)
         {
             shapes.push_back(newLeaf);
         }
 
-        public void Remove(AbstractShape Leaf)
+        public LinkedList getList()
         {
-            ;
+            return shapes;
         }
 
         public override bool inShape(int x, int y)
@@ -259,8 +263,21 @@ namespace OOP4Lab
             while (!shapes.eol())
             {
                 if (shapes.getObject().inShape(x, y))
+                {
+                    shapes.front();
+                    while (!shapes.eol())
+                    {
+                        shapes.getObject().Current = true;
+
+                        shapes.next();
+                    }
+                    current = true;
                     return true;
+                }
+                shapes.next();
             }
+
+            current = false;
             return false;
         }
         public override bool TryMove(int dx, int dy, Graphics g)
@@ -270,6 +287,8 @@ namespace OOP4Lab
             {
                 if (shapes.getObject().TryMove(dx, dy, g) == false)
                     return false;
+
+                shapes.next();
             }
 
             return true;
@@ -280,6 +299,8 @@ namespace OOP4Lab
             while (!shapes.eol())
             {
                 shapes.getObject().Move(dx, dy);
+
+                shapes.next();
             }
         }
         public override bool TryResize(int d, Graphics g)
@@ -289,6 +310,8 @@ namespace OOP4Lab
             {
                 if (shapes.getObject().TryResize(d, g) == false)
                     return false;
+
+                shapes.next();
             }
 
             return true;
@@ -299,6 +322,8 @@ namespace OOP4Lab
             while (!shapes.eol())
             {
                 shapes.getObject().Resize(size);
+
+                shapes.next();
             }
         }
         public override void Draw(Graphics g)
@@ -307,7 +332,49 @@ namespace OOP4Lab
             while (!shapes.eol())
             {
                 shapes.getObject().Draw(g);
+
+                shapes.next();
             }
+        }
+
+        public override void ColorChange(HatchBrush hatch)
+        {
+            brush = hatch;
+
+            shapes.front();
+            while (!shapes.eol())
+            {
+                shapes.getObject().ColorChange(brush);
+
+                shapes.next();
+            }
+        }
+
+        public override bool Current
+        {
+            get => current;
+            set
+            {
+                current = value;
+
+                shapes.front();
+                while (!shapes.eol())
+                {
+                    shapes.getObject().Current = current;
+
+                    shapes.next();
+                }
+            }
+        }
+
+        public override HatchBrush hBrush
+        {
+            get => brush;
+        }
+
+        ~CGroup()
+        {
+            shapes.clear();
         }
     }
 }

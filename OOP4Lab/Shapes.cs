@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace OOP4Lab
 {
-    class CCircle : Shape
+    class CCircle : AbstractShape
     {
         protected int x;
         protected int y;
@@ -105,17 +105,12 @@ namespace OOP4Lab
             }
             return true;
         }
-        public override int Size
+        public override void ColorChange(HatchBrush hatch)
         {
-            get => r;
-        }
-        public override Point getCentre()
-        {
-            return new Point(x, y);
+            brush = hatch;
         }
         public override HatchBrush hBrush
         {
-            set => brush = value;
             get => brush;
         }
         public override bool Current
@@ -123,6 +118,7 @@ namespace OOP4Lab
             get => current;
             set => current = value;
         }
+
         ~CCircle()
         {
             x = 0;
@@ -131,7 +127,7 @@ namespace OOP4Lab
         }
     }
 
-    class CRectangle : Shape
+    class CRectangle : AbstractShape
     {
         private int x;
         private int y;
@@ -224,23 +220,17 @@ namespace OOP4Lab
             }
             return true;
         }
-
-        public override int Size
-        {
-            get => hWidth;
-        }
         public override bool Current
         {
             get => current;
             set => current = value;
         }
-        public override Point getCentre()
+        public override void ColorChange(HatchBrush hatch)
         {
-            return new Point(x, y);
+            brush = hatch;
         }
         public override HatchBrush hBrush
         {
-            set => brush = value;
             get => brush;
         }
         ~CRectangle()

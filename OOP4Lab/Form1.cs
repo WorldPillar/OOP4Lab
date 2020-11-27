@@ -19,6 +19,7 @@ namespace OOP4Lab
         private Graphics g;
         //Буфер для bitmap изображения
         private Bitmap bitmapDraw;
+        private string action;
 
         private Model model;
         public PaintBox()
@@ -30,8 +31,10 @@ namespace OOP4Lab
             bitmapDraw = new Bitmap(drawBox.Width, drawBox.Height);
             //Инициализация g
             g = Graphics.FromImage(bitmapDraw);
-            g.Clear(Color.White);
             drawBox.Image = bitmapDraw;
+
+            createMenu.BackColor = Color.Coral;
+            action = "add";
 
             model = new Model(chooseColor, g);
         }
@@ -70,27 +73,28 @@ namespace OOP4Lab
 
         public bool inShape(int xPos, int yPos)
         {
-            //Если control не зажат,
-            //объекты перестанут быть текущими
-            //if (!controlPressed())
-            allFalse();
+            if (action == "add")
+                allFalse();
 
             //проверка, находился ли курсор в круге
             Mylist.back();
             while (!Mylist.eol())
             {
                 if (Mylist.getObject().inShape(xPos, yPos))
+                {
                     return true;
+                }
                 else
                     Mylist.prev();
             }
 
             //Обнуляем значения при создании нового объекта
-            allFalse();
+            if (action == "add")
+                allFalse();
             return false;
         }
 
-        private void ShapeCreate(object sender, MouseEventArgs e)
+        private void drawBoxClick(object sender, MouseEventArgs e)
         {
             //если курсор не был в уже созданном круге,
             //создасться новый круг и изображение обновится
@@ -98,42 +102,11 @@ namespace OOP4Lab
             {
                 if (!inShape(e.X, e.Y))
                 {
-                    //Добавление круга
-                    if (circleMenu.Checked)
+                    if (action == "add")
                     {
-                        Mylist.push_back(new CCircle(e.X, e.Y));
+                        AddShape(e);
+                        Draw();
                     }
-                    //Добавление квадрата
-                    else if (squareMenu.Checked)
-                    {
-                        Mylist.push_back(new CRectangle(e.X, e.Y));
-                    }
-                    //Добавление треугольника
-                    else if (triangleMenu.Checked)
-                    {
-                        Mylist.push_back(new CPolygon(e.X, e.Y, 3));
-                    }
-                    //Добавление пятиугольника
-                    else if (fiveMenu.Checked)
-                    {
-                        Mylist.push_back(new CPolygon(e.X, e.Y, 5));
-                    }
-                    //Добавление шестиугольника
-                    else if (sixMenu.Checked)
-                    {
-                        Mylist.push_back(new CPolygon(e.X, e.Y, 6));
-                    }
-                    //Добавление звезды
-                    else if (starMenu.Checked)
-                    {
-                        Mylist.push_back(new CStar(e.X, e.Y));
-                    }
-
-                    if (!Mylist.isEmpty())
-                        if (!Mylist.getTail().TryMove(0, 0, g))
-                        Mylist.erase(Mylist.back());
-
-                    Draw();
                 }
                 else
                 {
@@ -142,9 +115,51 @@ namespace OOP4Lab
             }
         }
 
+        private void AddShape(MouseEventArgs e)
+        {
+            //Добавление круга
+            if (circleMenu.Checked)
+            {
+                Mylist.push_back(new CCircle(e.X, e.Y));
+            }
+            //Добавление квадрата
+            else if (squareMenu.Checked)
+            {
+                Mylist.push_back(new CRectangle(e.X, e.Y));
+            }
+            //Добавление треугольника
+            else if (triangleMenu.Checked)
+            {
+                Mylist.push_back(new CPolygon(e.X, e.Y, 3));
+            }
+            //Добавление пятиугольника
+            else if (fiveMenu.Checked)
+            {
+                Mylist.push_back(new CPolygon(e.X, e.Y, 5));
+            }
+            //Добавление шестиугольника
+            else if (sixMenu.Checked)
+            {
+                Mylist.push_back(new CPolygon(e.X, e.Y, 6));
+            }
+            //Добавление звезды
+            else if (starMenu.Checked)
+            {
+                Mylist.push_back(new CStar(e.X, e.Y));
+            }
+
+            if (!Mylist.isEmpty())
+                if (!Mylist.getTail().TryMove(0, 0, g))
+                    Mylist.erase(Mylist.back());
+        }
+
         //Событие при нажатии клавиши
         private void Paint_KeyDown(object sender, KeyEventArgs e)
         {
+            if (action == "group")
+            {
+                return;
+            }
             //Выбор первого выделенного объекта
             Mylist.front();
             while (!Mylist.eol())
@@ -159,16 +174,7 @@ namespace OOP4Lab
             if (e.KeyCode == Keys.Delete)
             {
                 //Удаляет все объекты со значение current = true
-                Mylist.front();
-                while (!Mylist.eol())
-                {
-                    if (Mylist.getObject().Current)
-                    {
-                        Mylist.erase(Mylist.getCurrent());
-                    }
-                    else
-                        Mylist.next();
-                }
+                Mylist.erase(Mylist.getCurrent());
                 //Вырисовывает
                 Draw();
             }
@@ -189,6 +195,91 @@ namespace OOP4Lab
                 tsmi.Checked = thisTsmi == tsmi;
             }
         }
+
+        private void ActiveActionChange(object sender, EventArgs e)
+        {
+            groupMenu.BackColor = Color.MediumTurquoise;
+            createMenu.BackColor = Color.MediumTurquoise;
+            allFalse();
+            Draw();
+
+            if (sender.Equals(groupMenu))
+            {
+                action = "group";
+                groupMenu.BackColor = Color.Coral;
+
+                MakeGroup.Visible = true;
+                DeleteGroupMenu.Enabled = false;
+
+                return;
+            }
+            else if (sender.Equals(createMenu))
+            {
+                action = "add";
+                createMenu.BackColor = Color.Coral;
+
+                DeleteGroupMenu.Enabled = true;
+                MakeGroup.Visible = false;
+                return;
+            }
+        }
+
+        private void MakeGroup_Click(object sender, EventArgs e)
+        {
+            CGroup group = new CGroup();
+
+            Mylist.front();
+            while (!Mylist.eol())
+            {
+                if (Mylist.getObject().Current)
+                {
+                    group.Add(Mylist.getObject());
+                    Mylist.erase(Mylist.getCurrent());
+                }
+                else
+                    Mylist.next();
+            }
+
+            if (group.getList().size > 0)
+                Mylist.push_back(group);
+
+            ActiveActionChange(createMenu, null);
+        }
+
+        private void DeleteGroupMenu_Click(object sender, EventArgs e)
+        {
+            CGroup group = new CGroup();
+
+            Mylist.front();
+            while (!Mylist.eol())
+            {
+                if (Mylist.getObject().Current)
+                {
+                    group = Mylist.getObject() as CGroup;
+                    if (group != null)
+                    {
+                        break;
+                    }
+                    else
+                        return;
+                }
+                else
+                    Mylist.next();
+            }
+
+            LinkedList CopyList = group.getList();
+
+            CopyList.front();
+            while (!CopyList.eol())
+            {
+                Mylist.push_back(CopyList.getObject());
+
+                CopyList.next();
+            }
+            group = null;
+            
+            ActiveActionChange(createMenu, null);
+        }
     }
 
     //Класс Model, который по заданному параметру изменяет фигуру
@@ -205,7 +296,7 @@ namespace OOP4Lab
             colorChoose = color;
             this.g = g;
         }
-        public void ShapeAct(Keys key, Shape shape)
+        public void ShapeAct(Keys key, AbstractShape shape)
         {
             switch (key)
             {
@@ -266,8 +357,8 @@ namespace OOP4Lab
                         colorChoose.ShowDialog();
 
                         //Задаём кисть с выбранным цветом
-                        shape.hBrush = new HatchBrush(HatchStyle.Cross,
-                        Color.PaleVioletRed, colorChoose.Color);
+                        shape.ColorChange(new HatchBrush(HatchStyle.Cross,
+                        Color.PaleVioletRed, colorChoose.Color));
                         break;
                     }
             }
