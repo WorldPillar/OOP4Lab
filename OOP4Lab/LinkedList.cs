@@ -208,19 +208,19 @@ namespace OOP4Lab
             AbstractShape shape = null;
             switch (code)
             {
-                case "C":
+                case "Circle":
                     shape = new CCircle();
                     break;
-                case "R":
+                case "Rectangle":
                     shape = new CRectangle();
                     break;
-                case "P":
+                case "Polygon":
                     shape = new CPolygon();
                     break;
-                case "S":
+                case "Star":
                     shape = new CStar();
                     break;
-                case "G":
+                case "Group":
                     shape = new CGroup();
                     break;
             }
@@ -273,9 +273,9 @@ namespace OOP4Lab
         public abstract HatchBrush hBrush { get; }
         public abstract bool Current { get; set; }
         //Смещение фигуры на заданные координаты
-        public abstract void Move(int x, int y);
+        public abstract bool Move(int x, int y, Graphics g);
         //Изменение фигуры на заданный размер
-        public abstract void Resize(int size);
+        public abstract bool Resize(int size, Graphics g);
         //Попытка двигать фигуру в форме
         public abstract bool TryMove(int dx, int dy, Graphics g);
         //Попытка изменить размер фигуры в форме

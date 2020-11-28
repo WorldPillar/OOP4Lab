@@ -42,11 +42,30 @@ namespace OOP4Lab
                 Color.Black);
         }
 
-        public override void Move(int dx, int dy)
+        public override bool TryMove(int dx, int dy, Graphics g)
         {
+            PointF[] region = new PointF[4];
+            region[0] = new PointF(x + dx, y - r + dy);
+            region[1] = new PointF(x - r + dx, y + dy);
+            region[2] = new PointF(x + dx, y + r + dy);
+            region[3] = new PointF(x + r + dx, y + dy);
+            foreach (var it in region)
+                if (it.X < 0 || it.Y < 0
+                    || it.X > g.VisibleClipBounds.Width
+                    || it.Y > g.VisibleClipBounds.Height)
+                    return false;
+            return true;
+        }
+        public override bool Move(int dx, int dy, Graphics g)
+        {
+            if (!TryMove(dx, dy, g))
+                return false;
+
             x += dx;
             y += dy;
             Update();
+
+            return true;
         }
         public override bool inShape(int x, int y)
         {
@@ -65,31 +84,6 @@ namespace OOP4Lab
             else
                 g.FillPath(new SolidBrush(brush.BackgroundColor), graph);
         }
-        public override void Resize(int size)
-        {
-            r += size;
-            Update();
-        }
-        //Обновление фигуры в graphicpath
-        protected virtual void Update()
-        {
-            graph.Reset();
-            graph.AddEllipse(this.x - r, this.y - r, r * 2, r * 2);
-        }
-        public override bool TryMove(int dx, int dy, Graphics g)
-        {
-            PointF[] region = new PointF[4];
-            region[0] = new PointF(x + dx, y - r + dy);
-            region[1] = new PointF(x - r + dx, y + dy);
-            region[2] = new PointF(x + dx, y + r + dy);
-            region[3] = new PointF(x + r + dx, y + dy);
-            foreach (var it in region)
-                if (it.X < 0 || it.Y < 0
-                    || it.X > g.VisibleClipBounds.Width
-                    || it.Y > g.VisibleClipBounds.Height)
-                    return false;
-            return true;
-        }
         public override bool TryResize(int d, Graphics g)
         {
             if (r + d <= 0)
@@ -105,6 +99,22 @@ namespace OOP4Lab
                     return false;
             }
             return true;
+        }
+        public override bool Resize(int size, Graphics g)
+        {
+            if (!TryResize(size, g))
+                return false;
+
+            r += size;
+            Update();
+
+            return true;
+        }
+        //Обновление фигуры в graphicpath
+        protected virtual void Update()
+        {
+            graph.Reset();
+            graph.AddEllipse(this.x - r, this.y - r, r * 2, r * 2);
         }
         public override void ColorChange(HatchBrush hatch)
         {
@@ -122,8 +132,8 @@ namespace OOP4Lab
 
         public override void Save(StreamWriter sw)
         {
-            sw.WriteLine("C");
-            sw.WriteLine(x + " " + y + " " + r);
+            sw.WriteLine("Circle");
+            sw.WriteLine(x + " " + y + " " + r + " " + brush.BackgroundColor.ToArgb());
         }
 
         public override void Load(StreamReader sw)
@@ -135,6 +145,11 @@ namespace OOP4Lab
             int[] a = line.Split(' ').Select(int.Parse).ToArray();
 
             x = a[0]; y = a[1]; r = a[2];
+
+            brush = new HatchBrush(
+                HatchStyle.Cross,
+                Color.PaleVioletRed,
+                Color.FromArgb(a[3]));
         }
 
         ~CCircle()
@@ -173,10 +188,30 @@ namespace OOP4Lab
                 Color.Black);
         }
 
-        public override void Move(int dx, int dy)
+        public override bool TryMove(int dx, int dy, Graphics g)
         {
+            //Попытка двигать прямоугольник относительно 4-ёх его точек
+            PointF[] region = new PointF[4];
+            region[0] = new PointF(x + dx, y + hWidth + dy);
+            region[1] = new PointF(x - hWidth + dx, y + dy);
+            region[2] = new PointF(x + dx, y - hWidth + dy);
+            region[3] = new PointF(x + hWidth + dx, y + dy);
+            foreach (var it in region)
+                if (it.X < 0 || it.Y < 0
+                    || it.X > g.VisibleClipBounds.Width
+                    || it.Y > g.VisibleClipBounds.Height)
+                    return false;
+            return true;
+        }
+        public override bool Move(int dx, int dy, Graphics g)
+        {
+            if (!TryMove(dx, dy, g))
+                return false;
+
             x += dx;
             y += dy;
+
+            return true;
         }
         public override bool inShape(int x, int y)
         {
@@ -199,27 +234,6 @@ namespace OOP4Lab
                     x - hWidth, y - hWidth, hWidth * 2, hWidth * 2);
         }
 
-        public override void Resize(int size)
-        {
-            hWidth += size;
-        }
-
-        public override bool TryMove(int dx, int dy, Graphics g)
-        {
-            //Попытка двигать прямоугольник относительно 4-ёх его точек
-            PointF[] region = new PointF[4];
-            region[0] = new PointF(x + dx, y + hWidth + dy);
-            region[1] = new PointF(x - hWidth + dx, y + dy);
-            region[2] = new PointF(x + dx, y - hWidth + dy);
-            region[3] = new PointF(x + hWidth + dx, y + dy);
-            foreach (var it in region)
-                if (it.X < 0 || it.Y < 0
-                    || it.X > g.VisibleClipBounds.Width
-                    || it.Y > g.VisibleClipBounds.Height)
-                    return false;
-            return true;
-        }
-
         public override bool TryResize(int d, Graphics g)
         {
             //Если фигура меньше нуля, изменение размера запрещается
@@ -238,6 +252,15 @@ namespace OOP4Lab
             }
             return true;
         }
+        public override bool Resize(int size, Graphics g)
+        {
+            if (!TryResize(size, g))
+                return false;
+
+            hWidth += size;
+
+            return true;
+        }
         public override bool Current
         {
             get => current;
@@ -254,8 +277,8 @@ namespace OOP4Lab
 
         public override void Save(StreamWriter sw)
         {
-            sw.WriteLine("R");
-            sw.WriteLine(x + " " + y + " " + hWidth);
+            sw.WriteLine("Rectangle");
+            sw.WriteLine(x + " " + y + " " + hWidth + " " + brush.BackgroundColor.ToArgb());
         }
 
         public override void Load(StreamReader sw)
@@ -267,6 +290,11 @@ namespace OOP4Lab
             int[] a = line.Split(' ').Select(int.Parse).ToArray();
 
             x = a[0]; y = a[1]; hWidth = a[2];
+
+            brush = new HatchBrush(
+                HatchStyle.Cross,
+                Color.PaleVioletRed,
+                Color.FromArgb(a[3]));
         }
 
         ~CRectangle()
@@ -308,40 +336,6 @@ namespace OOP4Lab
             }
         }
 
-        public override void Move(int dx, int dy)
-        {
-            x += dx;
-            y += dy;
-
-            for (int i = 0; i < points.Length; ++i)
-            {
-                points[i].X += dx;
-                points[i].Y += dy;
-            }
-            Update();
-        }
-
-        public override void Resize(int size)
-        {
-            r += size;
-
-            //Каждая точка перемещается относительно своего угла.
-            double angle = Math.PI * 2 / points.Length;
-
-            for (int i = 0; i < points.Length; ++i)
-            {
-                points[i].X = (float)Math.Cos((-Math.PI / 2) + angle * i) * r + x;
-                points[i].Y = (float)Math.Sin((-Math.PI / 2) + angle * i) * r + y;
-            }
-            Update();
-        }
-
-        protected override void Update()
-        {
-            graph.Reset();
-            graph.AddPolygon(points);
-        }
-
         public override bool TryMove(int dx, int dy, Graphics g)
         {
             //Проверка выхода каждой точки из поля
@@ -352,6 +346,24 @@ namespace OOP4Lab
                     || it.Y + dy > g.VisibleClipBounds.Height)
                     return false;
             }
+            return true;
+        }
+
+        public override bool Move(int dx, int dy, Graphics g)
+        {
+            if (!TryMove(dx, dy, g))
+                return false;
+
+            x += dx;
+            y += dy;
+
+            for (int i = 0; i < points.Length; ++i)
+            {
+                points[i].X += dx;
+                points[i].Y += dy;
+            }
+            Update();
+
             return true;
         }
 
@@ -376,10 +388,37 @@ namespace OOP4Lab
             return true;
         }
 
+        public override bool Resize(int size, Graphics g)
+        {
+            if (!TryResize(size, g))
+                return false;
+
+            r += size;
+
+            //Каждая точка перемещается относительно своего угла.
+            double angle = Math.PI * 2 / points.Length;
+
+            for (int i = 0; i < points.Length; ++i)
+            {
+                points[i].X = (float)Math.Cos((-Math.PI / 2) + angle * i) * r + x;
+                points[i].Y = (float)Math.Sin((-Math.PI / 2) + angle * i) * r + y;
+            }
+            Update();
+
+            return true;
+        }
+
+        protected override void Update()
+        {
+            graph.Reset();
+            graph.AddPolygon(points);
+        }
+
         public override void Save(StreamWriter sw)
         {
-            sw.WriteLine("P");
-            sw.WriteLine(x + " " + y + " " + r + " " + points.Length);
+            sw.WriteLine("Polygon");
+            sw.WriteLine(x + " " + y + " " + r + " " + points.Length
+                + " " + brush.BackgroundColor.ToArgb());
         }
 
         public override void Load(StreamReader sw)
@@ -391,6 +430,11 @@ namespace OOP4Lab
             int[] a = line.Split(' ').Select(int.Parse).ToArray();
 
             x = a[0]; y = a[1]; r = a[2]; points = new PointF[a[3]];
+
+            brush = new HatchBrush(
+                HatchStyle.Cross,
+                Color.PaleVioletRed,
+                Color.FromArgb(a[4]));
 
             CreatPolygon();
         }
@@ -427,8 +471,11 @@ namespace OOP4Lab
             }
         }
 
-        public override void Resize(int size)
+        public override bool Resize(int size, Graphics g)
         {
+            if (!TryResize(size, g))
+                return false;
+
             r += size;
 
             double angle = Math.PI * 2 / points.Length;
@@ -446,12 +493,14 @@ namespace OOP4Lab
                 points[i].Y = (float)Math.Sin((-Math.PI / 2) + angle * i) * rad + y;
             }
             Update();
+
+            return true;
         }
 
         public override void Save(StreamWriter sw)
         {
-            sw.WriteLine("S");
-            sw.WriteLine(x + " " + y + " " + r);
+            sw.WriteLine("Star");
+            sw.WriteLine(x + " " + y + " " + r + " " + brush.BackgroundColor.ToArgb());
         }
 
         public override void Load(StreamReader sw)
@@ -463,6 +512,11 @@ namespace OOP4Lab
             int[] a = line.Split(' ').Select(int.Parse).ToArray();
 
             x = a[0]; y = a[1]; r = a[2];
+
+            brush = new HatchBrush(
+                HatchStyle.Cross,
+                Color.PaleVioletRed,
+                Color.FromArgb(a[3]));
 
             CreatPolygon();
         }
@@ -530,15 +584,20 @@ namespace OOP4Lab
 
             return true;
         }
-        public override void Move(int dx, int dy)
+        public override bool Move(int dx, int dy, Graphics g)
         {
+            if (!TryMove(dx, dy, g))
+                return false;
+
             shapes.front();
             while (!shapes.eol())
             {
-                shapes.getObject().Move(dx, dy);
+                shapes.getObject().Move(dx, dy, g);
 
                 shapes.next();
             }
+
+            return true;
         }
         public override bool TryResize(int d, Graphics g)
         {
@@ -553,15 +612,20 @@ namespace OOP4Lab
 
             return true;
         }
-        public override void Resize(int size)
+        public override bool Resize(int size, Graphics g)
         {
+            if (!TryResize(size, g))
+                return false;
+
             shapes.front();
             while (!shapes.eol())
             {
-                shapes.getObject().Resize(size);
+                shapes.getObject().Resize(size, g);
 
                 shapes.next();
             }
+
+            return true;
         }
         public override void Draw(Graphics g)
         {
@@ -606,7 +670,7 @@ namespace OOP4Lab
 
         public override void Save(StreamWriter sw)
         {
-            sw.WriteLine("G");
+            sw.WriteLine("Group");
             sw.WriteLine(shapes.size);
 
             shapes.front();

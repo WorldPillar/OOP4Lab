@@ -21,6 +21,7 @@ namespace OOP4Lab
         //Буфер для bitmap изображения
         private Bitmap bitmapDraw;
         private string action;
+        private string shapeCreate;
 
         private Model model;
         public PaintBox()
@@ -36,17 +37,12 @@ namespace OOP4Lab
 
             createMenu.BackColor = Color.Coral;
             action = "add";
+            shapeCreate = "circleMenu";
 
             model = new Model(chooseColor, g);
 
             if (!File.Exists(@"D:\GitHub\OOP4Lab\shapes.txt"))
                 File.CreateText(@"D:\GitHub\OOP4Lab\shapes.txt");
-        }
-
-        public bool controlPressed()
-        {
-            //Зажат ли control
-            return (Control.ModifierKeys & Keys.Control) == Keys.Control;
         }
 
         public void Draw()
@@ -121,39 +117,36 @@ namespace OOP4Lab
 
         private void AddShape(MouseEventArgs e)
         {
-            //Добавление круга
-            if (circleMenu.Checked)
+            switch (shapeCreate)
             {
-                Mylist.push_back(new CCircle(e.X, e.Y));
-            }
-            //Добавление квадрата
-            else if (squareMenu.Checked)
-            {
-                Mylist.push_back(new CRectangle(e.X, e.Y));
-            }
-            //Добавление треугольника
-            else if (triangleMenu.Checked)
-            {
-                Mylist.push_back(new CPolygon(e.X, e.Y, 3));
-            }
-            //Добавление пятиугольника
-            else if (fiveMenu.Checked)
-            {
-                Mylist.push_back(new CPolygon(e.X, e.Y, 5));
-            }
-            //Добавление шестиугольника
-            else if (sixMenu.Checked)
-            {
-                Mylist.push_back(new CPolygon(e.X, e.Y, 6));
-            }
-            //Добавление звезды
-            else if (starMenu.Checked)
-            {
-                Mylist.push_back(new CStar(e.X, e.Y));
+                //Добавление круга
+                case "circleMenu":
+                    Mylist.push_back(new CCircle(e.X, e.Y));
+                    break;
+                //Добавление треугольника
+                case "triangleMenu":
+                    Mylist.push_back(new CPolygon(e.X, e.Y, 3));
+                    break;
+                //Добавление квадрата
+                case "squareMenu":
+                    Mylist.push_back(new CRectangle(e.X, e.Y));
+                    break;
+                //Добавление пятиугольника
+                case "fiveMenu":
+                    Mylist.push_back(new CPolygon(e.X, e.Y, 5));
+                    break;
+                //Добавление шестиугольника
+                case "sixMenu":
+                    Mylist.push_back(new CPolygon(e.X, e.Y, 6));
+                    break;
+                //Добавление звезды
+                case "starMenu":
+                    Mylist.push_back(new CStar(e.X, e.Y));
+                    break;
             }
 
             if (!Mylist.isEmpty())
-                if (!Mylist.getTail().TryMove(0, 0, g))
+                if (!Mylist.getTail().Move(0, 0, g))
                     Mylist.erase(Mylist.back());
         }
 
@@ -194,6 +187,7 @@ namespace OOP4Lab
         private void ToolStripMenueItem_Click(object sender, EventArgs e)
         {
             var thisTsmi = (ToolStripMenuItem)sender;
+            shapeCreate = thisTsmi.Name;
             foreach (ToolStripMenuItem tsmi in thisTsmi.GetCurrentParent().Items)
             {
                 tsmi.Checked = thisTsmi == tsmi;
@@ -228,6 +222,7 @@ namespace OOP4Lab
             }
         }
 
+        //Создаётся группа
         private void MakeGroup_Click(object sender, EventArgs e)
         {
             CGroup group = new CGroup();
@@ -250,6 +245,7 @@ namespace OOP4Lab
             ActiveActionChange(createMenu, null);
         }
 
+        //Удаляется группа
         private void DeleteGroupMenu_Click(object sender, EventArgs e)
         {
             CGroup group = new CGroup();
@@ -285,6 +281,7 @@ namespace OOP4Lab
             ActiveActionChange(createMenu, null);
         }
 
+        //Сохраняются фигуры в файл
         private void SaveMenu_Click(object sender, EventArgs e)
         {
             using (File.Create(@"D:\GitHub\OOP4Lab\shapes.txt"))
@@ -308,6 +305,7 @@ namespace OOP4Lab
             Draw();
         }
 
+        //Фигуры выгружаются в хранилище из файла
         private void LoadMenu_Click(object sender, EventArgs e)
         {
             StreamReader file = new StreamReader(@"D:\GitHub\OOP4Lab\shapes.txt");
@@ -328,80 +326,161 @@ namespace OOP4Lab
         int move;
         ColorDialog colorChoose;
         Graphics g;
+        Stack<Command> history;
+        Dictionary<Keys, Command> commands;
+
         public Model(ColorDialog color, Graphics g)
         {
             sizeChange = 5;
             move = 5;
             colorChoose = color;
             this.g = g;
+
+            history = new Stack<Command>();
+            commands = new Dictionary<Keys, Command>();
+
+            //Уменьшает фигуру
+            commands[Keys.OemMinus] = new ReSizeCommand(-sizeChange, g);
+            //Увеличиваем фигуру
+            commands[Keys.Oemplus] = new ReSizeCommand(sizeChange, g);
+            //Сдвиг фигуры вниз
+            commands[Keys.Down] = new MoveCommand(0, move, g);
+            //Сдвиг фигуры вверх
+            commands[Keys.Up] = new MoveCommand(0, -move, g);
+            //Сдвиг фигуры влево
+            commands[Keys.Left] = new MoveCommand(-move, 0, g);
+            //Сдвиг фигуры вправо
+            commands[Keys.Right] = new MoveCommand(move, 0, g);
         }
-        public void ShapeAct(Keys key, AbstractShape shape)
+        public void ShapeAct(Keys key, AbstractShape selection)
         {
             switch (key)
             {
-                //Уменьшает фигуру
-                case Keys.OemMinus:
-                    {
-                        if (shape.TryResize(-sizeChange, g))
-                            shape.Resize(-sizeChange);
-
-                        break;
-                    }
-                //Увеличиваем фигуру
-                case Keys.Oemplus:
-                    {
-                        if (shape.TryResize(sizeChange, g))
-                            shape.Resize(sizeChange);
-
-                        break;
-                    }
-                //Двигаем фигуру вниз
-                case Keys.Down:
-                    {
-                        if(shape.TryMove(0, move, g))
-                            shape.Move(0, move);
-
-                        break;
-                    }
-                //Двигаем фигуру вверх
-                case Keys.Up:
-                    {
-                        if (shape.TryMove(0, -move, g))
-                            shape.Move(0, -move);
-
-                        break;
-                    }
-                //Двигаем фигуру влево
-                case Keys.Left:
-                    {
-                        if (shape.TryMove(-move, 0, g))
-                            shape.Move(-move, 0);
-
-                        break;
-                    }
-                //Двигаем фигуру вправо
-                case Keys.Right:
-                    {
-                        if (shape.TryMove(move, 0, g))
-                            shape.Move(move, 0);
-
-                        break;
-                    }
                 //Меняем цвет у фигуры
                 case Keys.C:
                     {
                         //Сохраняем цвет фигуры
-                        colorChoose.Color = shape.hBrush.BackgroundColor;
+                        colorChoose.Color = selection.hBrush.BackgroundColor;
                         //Вызываем color dialog
                         colorChoose.ShowDialog();
 
                         //Задаём кисть с выбранным цветом
-                        shape.ColorChange(new HatchBrush(HatchStyle.Cross,
+                        selection.ColorChange(new HatchBrush(HatchStyle.Cross,
                         Color.PaleVioletRed, colorChoose.Color));
                         break;
                     }
+                case Keys.Back:
+                    {
+                        if (!history.Any())
+                            return;
+
+                        Command lastcommand = history.Pop();
+
+                        lastcommand.unexecute();
+
+                        break;
+                    }
+            }
+
+            Command command;
+
+            if (commands.ContainsKey(key))
+                command = commands[key];
+            else
+                command = null;
+
+            if (command != null)
+            {
+                Command newcommand = command.clone();
+
+                newcommand.execute(selection);
+
+                history.Push(newcommand);
             }
         }
     }
 
+    abstract class Command
+    {
+        abstract public void execute(AbstractShape sel);
+
+        abstract public void unexecute();
+
+        abstract public Command clone();
+    }
+
+    class MoveCommand : Command
+    {
+        AbstractShape selection;
+
+        int dx, dy;
+        Graphics g;
+
+        public MoveCommand(int dx, int dy, Graphics g)
+        {
+            this.dx = dx;
+            this.dy = dy;
+            this.g = g;
+        }
+
+        public override void execute(AbstractShape sel)
+        {
+            selection = sel;
+
+            if (selection != null)
+            {
+                selection.Move(dx, dy, g);
+            }
+        }
+
+        public override void unexecute()
+        {
+            if (selection != null)
+            {
+                selection.Move(-dx, -dy, g);
+            }
+        }
+
+        public override Command clone()
+        {
+            return new MoveCommand(dx, dy, g);
+        }
+    }
+
+    class ReSizeCommand : Command
+    {
+        AbstractShape selection;
+
+        int size;
+        Graphics g;
+
+        public ReSizeCommand(int size, Graphics g)
+        {
+            this.size = size;
+            this.g = g;
+        }
+
+        public override void execute(AbstractShape sel)
+        {
+            selection = sel;
+
+            if (selection != null)
+            {
+                selection.Resize(size, g);
+            }
+        }
+
+        public override void unexecute()
+        {
+            if (selection != null)
+            {
+                selection.Resize(-size, g);
+            }
+        }
+
+        public override Command clone()
+        {
+            return new ReSizeCommand(size, g);
+        }
+    }
 }
