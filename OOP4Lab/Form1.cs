@@ -177,8 +177,7 @@ namespace OOP4Lab
             }
 
             //Вызов Модели для выполнения действий над выбранной фигурой
-            if (!Mylist.eol() && Mylist.getObject() != null)
-                model.ShapeAct(e.KeyCode, Mylist.getObject());
+            model.ShapeAct(e.KeyCode, Mylist.getObject());
 
             Draw();
         }
@@ -351,24 +350,13 @@ namespace OOP4Lab
             commands[Keys.Left] = new MoveCommand(-move, 0, g);
             //Сдвиг фигуры вправо
             commands[Keys.Right] = new MoveCommand(move, 0, g);
+            //Меняем цвет фигуры
+            commands[Keys.C] = new ColorCommand(colorChoose);
         }
         public void ShapeAct(Keys key, AbstractShape selection)
         {
             switch (key)
             {
-                //Меняем цвет у фигуры
-                case Keys.C:
-                    {
-                        //Сохраняем цвет фигуры
-                        colorChoose.Color = selection.hBrush.BackgroundColor;
-                        //Вызываем color dialog
-                        colorChoose.ShowDialog();
-
-                        //Задаём кисть с выбранным цветом
-                        selection.ColorChange(new HatchBrush(HatchStyle.Cross,
-                        Color.PaleVioletRed, colorChoose.Color));
-                        break;
-                    }
                 case Keys.Back:
                     {
                         if (!history.Any())
@@ -376,21 +364,16 @@ namespace OOP4Lab
 
                         Command lastcommand = history.Pop();
 
-                        lastcommand.unexecute();
+                        lastcommand.undo();
 
                         break;
                     }
             }
 
-            Command command;
-
-            if (commands.ContainsKey(key))
-                command = commands[key];
-            else
-                command = null;
-
-            if (command != null)
+            if (selection != null && commands.ContainsKey(key))
             {
+                Command command = commands[key];
+
                 Command newcommand = command.clone();
 
                 newcommand.execute(selection);
@@ -404,7 +387,7 @@ namespace OOP4Lab
     {
         abstract public void execute(AbstractShape sel);
 
-        abstract public void unexecute();
+        abstract public void undo();
 
         abstract public Command clone();
     }
@@ -433,7 +416,7 @@ namespace OOP4Lab
             }
         }
 
-        public override void unexecute()
+        public override void undo()
         {
             if (selection != null)
             {
@@ -470,7 +453,7 @@ namespace OOP4Lab
             }
         }
 
-        public override void unexecute()
+        public override void undo()
         {
             if (selection != null)
             {
@@ -481,6 +464,47 @@ namespace OOP4Lab
         public override Command clone()
         {
             return new ReSizeCommand(size, g);
+        }
+    }
+
+    class ColorCommand : Command
+    {
+        AbstractShape selection;
+
+        ColorDialog colorChoose;
+        Color backcolor;
+
+        public ColorCommand(ColorDialog colorChoose)
+        {
+            this.colorChoose = colorChoose;
+        }
+
+        public override void execute(AbstractShape sel)
+        {
+            selection = sel;
+            if (selection != null)
+            {
+                backcolor = selection.hBrush.BackgroundColor;
+
+                //Сохраняем цвет фигуры
+                colorChoose.Color = backcolor;
+                //Вызываем color dialog
+                colorChoose.ShowDialog();
+                //Задаём кисть с выбранным цветом
+                selection.ColorChange(new HatchBrush(HatchStyle.Cross,
+                            Color.PaleVioletRed, colorChoose.Color));
+            }
+        }
+
+        public override void undo()
+        {
+            selection.ColorChange(new HatchBrush(HatchStyle.Cross,
+                        Color.PaleVioletRed, backcolor)); ;
+        }
+
+        public override Command clone()
+        {
+            return new ColorCommand(colorChoose);
         }
     }
 }
