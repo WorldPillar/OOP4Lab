@@ -46,9 +46,9 @@
             this.groupMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.MakeGroup = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteGroupMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.LoadMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.chooseColor = new System.Windows.Forms.ColorDialog();
-            this.сохранитьОбъектыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.загрузитьОбъектыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.drawBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -73,8 +73,8 @@
             this.groupMenu,
             this.MakeGroup,
             this.DeleteGroupMenu,
-            this.сохранитьОбъектыToolStripMenuItem,
-            this.загрузитьОбъектыToolStripMenuItem});
+            this.SaveMenu,
+            this.LoadMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1184, 24);
@@ -138,7 +138,7 @@
             this.circleMenu.CheckOnClick = true;
             this.circleMenu.CheckState = System.Windows.Forms.CheckState.Checked;
             this.circleMenu.Name = "circleMenu";
-            this.circleMenu.Size = new System.Drawing.Size(180, 22);
+            this.circleMenu.Size = new System.Drawing.Size(160, 22);
             this.circleMenu.Text = "Круг";
             this.circleMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -146,7 +146,7 @@
             // 
             this.triangleMenu.CheckOnClick = true;
             this.triangleMenu.Name = "triangleMenu";
-            this.triangleMenu.Size = new System.Drawing.Size(180, 22);
+            this.triangleMenu.Size = new System.Drawing.Size(160, 22);
             this.triangleMenu.Text = "Треугольник";
             this.triangleMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -154,7 +154,7 @@
             // 
             this.squareMenu.CheckOnClick = true;
             this.squareMenu.Name = "squareMenu";
-            this.squareMenu.Size = new System.Drawing.Size(180, 22);
+            this.squareMenu.Size = new System.Drawing.Size(160, 22);
             this.squareMenu.Text = "Квадрат";
             this.squareMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -162,7 +162,7 @@
             // 
             this.fiveMenu.CheckOnClick = true;
             this.fiveMenu.Name = "fiveMenu";
-            this.fiveMenu.Size = new System.Drawing.Size(180, 22);
+            this.fiveMenu.Size = new System.Drawing.Size(160, 22);
             this.fiveMenu.Text = "Пятиугольник";
             this.fiveMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -170,7 +170,7 @@
             // 
             this.sixMenu.CheckOnClick = true;
             this.sixMenu.Name = "sixMenu";
-            this.sixMenu.Size = new System.Drawing.Size(180, 22);
+            this.sixMenu.Size = new System.Drawing.Size(160, 22);
             this.sixMenu.Text = "Шестиугольник";
             this.sixMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -178,7 +178,7 @@
             // 
             this.starMenu.CheckOnClick = true;
             this.starMenu.Name = "starMenu";
-            this.starMenu.Size = new System.Drawing.Size(180, 22);
+            this.starMenu.Size = new System.Drawing.Size(160, 22);
             this.starMenu.Text = "Звезда";
             this.starMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -215,24 +215,26 @@
             this.DeleteGroupMenu.Text = "Разгруппировать фигуры";
             this.DeleteGroupMenu.Click += new System.EventHandler(this.DeleteGroupMenu_Click);
             // 
+            // SaveMenu
+            // 
+            this.SaveMenu.BackColor = System.Drawing.Color.MediumTurquoise;
+            this.SaveMenu.Name = "SaveMenu";
+            this.SaveMenu.Size = new System.Drawing.Size(128, 20);
+            this.SaveMenu.Text = "Сохранить объекты";
+            this.SaveMenu.Click += new System.EventHandler(this.SaveMenu_Click);
+            // 
+            // LoadMenu
+            // 
+            this.LoadMenu.BackColor = System.Drawing.Color.MediumTurquoise;
+            this.LoadMenu.Name = "LoadMenu";
+            this.LoadMenu.Size = new System.Drawing.Size(123, 20);
+            this.LoadMenu.Text = "Загрузить объекты";
+            this.LoadMenu.Click += new System.EventHandler(this.LoadMenu_Click);
+            // 
             // chooseColor
             // 
             this.chooseColor.AnyColor = true;
             this.chooseColor.SolidColorOnly = true;
-            // 
-            // сохранитьОбъектыToolStripMenuItem
-            // 
-            this.сохранитьОбъектыToolStripMenuItem.BackColor = System.Drawing.Color.MediumTurquoise;
-            this.сохранитьОбъектыToolStripMenuItem.Name = "сохранитьОбъектыToolStripMenuItem";
-            this.сохранитьОбъектыToolStripMenuItem.Size = new System.Drawing.Size(128, 20);
-            this.сохранитьОбъектыToolStripMenuItem.Text = "Сохранить объекты";
-            // 
-            // загрузитьОбъектыToolStripMenuItem
-            // 
-            this.загрузитьОбъектыToolStripMenuItem.BackColor = System.Drawing.Color.MediumTurquoise;
-            this.загрузитьОбъектыToolStripMenuItem.Name = "загрузитьОбъектыToolStripMenuItem";
-            this.загрузитьОбъектыToolStripMenuItem.Size = new System.Drawing.Size(123, 20);
-            this.загрузитьОбъектыToolStripMenuItem.Text = "Загрузить объекты";
             // 
             // PaintBox
             // 
@@ -276,8 +278,8 @@
         private System.Windows.Forms.ToolStripMenuItem DeleteGroupMenu;
         private System.Windows.Forms.ToolStripMenuItem MakeGroup;
         private System.Windows.Forms.ToolStripMenuItem createMenu;
-        private System.Windows.Forms.ToolStripMenuItem сохранитьОбъектыToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem загрузитьОбъектыToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SaveMenu;
+        private System.Windows.Forms.ToolStripMenuItem LoadMenu;
     }
 }
 

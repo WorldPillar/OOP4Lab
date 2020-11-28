@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,7 +15,7 @@ namespace OOP4Lab
     public partial class PaintBox : Form
     {
         //Создаём список
-        LinkedList Mylist;
+        MyLinkedList Mylist;
         //Создаём объект класса graphics для рисования
         private Graphics g;
         //Буфер для bitmap изображения
@@ -26,7 +27,7 @@ namespace OOP4Lab
         {
             InitializeComponent();
             //Инициализируем список
-            Mylist = new LinkedList();
+            Mylist = new MyLinkedList();
             //Инициализируем объект bitmap, копируем размер drawBox в него
             bitmapDraw = new Bitmap(drawBox.Width, drawBox.Height);
             //Инициализация g
@@ -37,6 +38,9 @@ namespace OOP4Lab
             action = "add";
 
             model = new Model(chooseColor, g);
+
+            if (!File.Exists(@"D:\GitHub\OOP4Lab\shapes.txt"))
+                File.CreateText(@"D:\GitHub\OOP4Lab\shapes.txt");
         }
 
         public bool controlPressed()
@@ -267,7 +271,7 @@ namespace OOP4Lab
                     Mylist.next();
             }
 
-            LinkedList CopyList = group.getList();
+            MyLinkedList CopyList = group.getList();
 
             CopyList.front();
             while (!CopyList.eol())
@@ -279,6 +283,41 @@ namespace OOP4Lab
             group = null;
             
             ActiveActionChange(createMenu, null);
+        }
+
+        private void SaveMenu_Click(object sender, EventArgs e)
+        {
+            using (File.Create(@"D:\GitHub\OOP4Lab\shapes.txt"))
+            {; }
+
+            string writePath = @"D:\GitHub\OOP4Lab\shapes.txt";
+
+            StreamWriter st = new StreamWriter(writePath, true);
+
+            st.WriteLine(Mylist.size);
+            Mylist.front();
+            while (!Mylist.eol())
+            {
+                Mylist.getObject().Save(st);
+                Mylist.next();
+            }
+
+            st.Close();
+            LoadMenu.Enabled = true;
+            Mylist.clear();
+            Draw();
+        }
+
+        private void LoadMenu_Click(object sender, EventArgs e)
+        {
+            StreamReader file = new StreamReader(@"D:\GitHub\OOP4Lab\shapes.txt");
+
+            Mylist.loadShapes(file);
+
+            Draw();
+
+            file.Close();
+            LoadMenu.Enabled = false;
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -19,7 +20,7 @@ namespace OOP4Lab
         //Текущий элемент
         Node current;
         //Счётчик элементов
-        private int count = 0;
+        protected int count = 0;
 
         //Конструктор по умолчанию
         public LinkedList()
@@ -137,13 +138,13 @@ namespace OOP4Lab
         {
             if (root == null)
                 return;
-            Node delRoot = root;
             do
             {
-                Node delThis = delRoot;
-                delRoot = delRoot.nextNode;
+                Node delThis = root;
+                root = root.nextNode;
                 delThis = null;
-            } while (delRoot != null);
+            } while (root != null);
+            tail = null;
             count = 0;
         }
         public AbstractShape getRoot()
@@ -169,6 +170,62 @@ namespace OOP4Lab
         public Node getCurrent()
         {
             return current;
+        }
+
+        protected virtual AbstractShape creatShapes(string code)
+        {
+            return null;
+        }
+
+        public void loadShapes(StreamReader file)
+        {
+            int count = int.Parse(file.ReadLine());
+
+            for (int i = 0; i < count; ++i)
+            {
+
+                string code;
+
+                while ((code = file.ReadLine()) != null)
+                {
+                    AbstractShape shape = creatShapes(code);
+
+                    if (shape != null)
+                    {
+                        shape.Load(file);
+
+                        push_back(shape);
+                    }
+                }
+            }
+        }
+    }
+
+    class MyLinkedList : LinkedList
+    {
+        protected override AbstractShape creatShapes(string code)
+        {
+            AbstractShape shape = null;
+            switch (code)
+            {
+                case "C":
+                    shape = new CCircle();
+                    break;
+                case "R":
+                    shape = new CRectangle();
+                    break;
+                case "P":
+                    shape = new CPolygon();
+                    break;
+                case "S":
+                    shape = new CStar();
+                    break;
+                case "G":
+                    shape = new CGroup();
+                    break;
+            }
+
+            return shape;
         }
     }
 
@@ -227,154 +284,8 @@ namespace OOP4Lab
         public abstract bool inShape(int x, int y);
         //Отрисовка фигуры
         public abstract void Draw(Graphics g);
-
         public abstract void ColorChange(HatchBrush hatch);
-    }
-
-    class CGroup : AbstractShape
-    {
-        LinkedList shapes;
-        protected bool current;
-
-        public CGroup()
-        {
-            shapes = new LinkedList();
-            current = true;
-
-            brush = new HatchBrush(
-                HatchStyle.Cross,
-                Color.PaleVioletRed,
-                Color.Black);
-        }
-
-        public void Add(AbstractShape newLeaf)
-        {
-            shapes.push_back(newLeaf);
-        }
-
-        public LinkedList getList()
-        {
-            return shapes;
-        }
-
-        public override bool inShape(int x, int y)
-        {
-            shapes.front();
-            while (!shapes.eol())
-            {
-                if (shapes.getObject().inShape(x, y))
-                {
-                    shapes.front();
-                    while (!shapes.eol())
-                    {
-                        shapes.getObject().Current = true;
-
-                        shapes.next();
-                    }
-                    current = true;
-                    return true;
-                }
-                shapes.next();
-            }
-
-            current = false;
-            return false;
-        }
-        public override bool TryMove(int dx, int dy, Graphics g)
-        {
-            shapes.front();
-            while (!shapes.eol())
-            {
-                if (shapes.getObject().TryMove(dx, dy, g) == false)
-                    return false;
-
-                shapes.next();
-            }
-
-            return true;
-        }
-        public override void Move(int dx, int dy)
-        {
-            shapes.front();
-            while (!shapes.eol())
-            {
-                shapes.getObject().Move(dx, dy);
-
-                shapes.next();
-            }
-        }
-        public override bool TryResize(int d, Graphics g)
-        {
-            shapes.front();
-            while (!shapes.eol())
-            {
-                if (shapes.getObject().TryResize(d, g) == false)
-                    return false;
-
-                shapes.next();
-            }
-
-            return true;
-        }
-        public override void Resize(int size)
-        {
-            shapes.front();
-            while (!shapes.eol())
-            {
-                shapes.getObject().Resize(size);
-
-                shapes.next();
-            }
-        }
-        public override void Draw(Graphics g)
-        {
-            shapes.front();
-            while (!shapes.eol())
-            {
-                shapes.getObject().Draw(g);
-
-                shapes.next();
-            }
-        }
-
-        public override void ColorChange(HatchBrush hatch)
-        {
-            brush = hatch;
-
-            shapes.front();
-            while (!shapes.eol())
-            {
-                shapes.getObject().ColorChange(brush);
-
-                shapes.next();
-            }
-        }
-
-        public override bool Current
-        {
-            get => current;
-            set
-            {
-                current = value;
-
-                shapes.front();
-                while (!shapes.eol())
-                {
-                    shapes.getObject().Current = current;
-
-                    shapes.next();
-                }
-            }
-        }
-
-        public override HatchBrush hBrush
-        {
-            get => brush;
-        }
-
-        ~CGroup()
-        {
-            shapes.clear();
-        }
+        public abstract void Save(StreamWriter sw);
+        public abstract void Load(StreamReader sw);
     }
 }

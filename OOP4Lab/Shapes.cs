@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -17,7 +18,7 @@ namespace OOP4Lab
         protected int r = 30;
         protected bool current;
         protected GraphicsPath graph;
-        protected CCircle()
+        public CCircle()
         {
             graph = new GraphicsPath();
             x = 0;
@@ -119,6 +120,23 @@ namespace OOP4Lab
             set => current = value;
         }
 
+        public override void Save(StreamWriter sw)
+        {
+            sw.WriteLine("C");
+            sw.WriteLine(x + " " + y + " " + r);
+        }
+
+        public override void Load(StreamReader sw)
+        {
+            string line;
+
+            line = sw.ReadLine();
+
+            int[] a = line.Split(' ').Select(int.Parse).ToArray();
+
+            x = a[0]; y = a[1]; r = a[2];
+        }
+
         ~CCircle()
         {
             x = 0;
@@ -133,7 +151,7 @@ namespace OOP4Lab
         private int y;
         private int hWidth = 30;
         private bool current;
-        private CRectangle()
+        public CRectangle()
         {
             x = 0;
             y = 0;
@@ -141,8 +159,8 @@ namespace OOP4Lab
             current = false;
             brush = new HatchBrush(
                 HatchStyle.Cross,
-                Color.White,
-                Color.White);
+                Color.PaleVioletRed,
+                Color.Black);
         }
         public CRectangle(int x, int y)
         {
@@ -233,6 +251,24 @@ namespace OOP4Lab
         {
             get => brush;
         }
+
+        public override void Save(StreamWriter sw)
+        {
+            sw.WriteLine("R");
+            sw.WriteLine(x + " " + y + " " + hWidth);
+        }
+
+        public override void Load(StreamReader sw)
+        {
+            string line;
+
+            line = sw.ReadLine();
+
+            int[] a = line.Split(' ').Select(int.Parse).ToArray();
+
+            x = a[0]; y = a[1]; hWidth = a[2];
+        }
+
         ~CRectangle()
         {
             x = 0;
@@ -245,6 +281,11 @@ namespace OOP4Lab
     {
         //Вершины многоугольника
         protected PointF[] points;
+
+        public CPolygon() : base()
+        {
+            points = new PointF[0];
+        }
 
         public CPolygon(int x, int y, int amount) : base(x, y)
         {
@@ -334,11 +375,35 @@ namespace OOP4Lab
             }
             return true;
         }
+
+        public override void Save(StreamWriter sw)
+        {
+            sw.WriteLine("P");
+            sw.WriteLine(x + " " + y + " " + r + " " + points.Length);
+        }
+
+        public override void Load(StreamReader sw)
+        {
+            string line;
+
+            line = sw.ReadLine();
+
+            int[] a = line.Split(' ').Select(int.Parse).ToArray();
+
+            x = a[0]; y = a[1]; r = a[2]; points = new PointF[a[3]];
+
+            CreatPolygon();
+        }
     }
 
     class CStar : CPolygon
     {
         //Создание звезды
+        public CStar() : base()
+        {
+            points = new PointF[10];
+        }
+
         public CStar(int x, int y) : base(x, y, 10)
         {
             graph = new GraphicsPath();
@@ -357,8 +422,8 @@ namespace OOP4Lab
                     (float)Math.Sin((-Math.PI / 2) + angle * i) * r + y);
                 //Иначе лежит в окружности
                 else
-                    points[i] = new PointF((float)Math.Cos((-Math.PI / 2) + angle * i) * (r / 2) + x,
-                    (float)Math.Sin((-Math.PI / 2) + angle * i) * (r / 2) + y);
+                    points[i] = new PointF((float)Math.Cos((-Math.PI / 2) + angle * i) * (float)(r / 2.5) + x,
+                    (float)Math.Sin((-Math.PI / 2) + angle * i) * (float)(r / 2.5) + y);
             }
         }
 
@@ -375,12 +440,197 @@ namespace OOP4Lab
                 float rad = r;
                 if (i % 2 == 0)
                     rad = r;
-                else rad = r / 2;
+                else rad = (float)(r / 2.5);
 
                 points[i].X = (float)Math.Cos((-Math.PI / 2) + angle * i) * rad + x;
                 points[i].Y = (float)Math.Sin((-Math.PI / 2) + angle * i) * rad + y;
             }
             Update();
+        }
+
+        public override void Save(StreamWriter sw)
+        {
+            sw.WriteLine("S");
+            sw.WriteLine(x + " " + y + " " + r);
+        }
+
+        public override void Load(StreamReader sw)
+        {
+            string line;
+
+            line = sw.ReadLine();
+
+            int[] a = line.Split(' ').Select(int.Parse).ToArray();
+
+            x = a[0]; y = a[1]; r = a[2];
+
+            CreatPolygon();
+        }
+    }
+
+    class CGroup : AbstractShape
+    {
+        MyLinkedList shapes;
+        protected bool current;
+
+        public CGroup()
+        {
+            shapes = new MyLinkedList();
+            current = true;
+
+            brush = new HatchBrush(
+                HatchStyle.Cross,
+                Color.PaleVioletRed,
+                Color.Black);
+        }
+
+        public void Add(AbstractShape newLeaf)
+        {
+            shapes.push_back(newLeaf);
+        }
+
+        public MyLinkedList getList()
+        {
+            return shapes;
+        }
+
+        public override bool inShape(int x, int y)
+        {
+            shapes.front();
+            while (!shapes.eol())
+            {
+                if (shapes.getObject().inShape(x, y))
+                {
+                    shapes.front();
+                    while (!shapes.eol())
+                    {
+                        shapes.getObject().Current = true;
+
+                        shapes.next();
+                    }
+                    current = true;
+                    return true;
+                }
+                shapes.next();
+            }
+
+            current = false;
+            return false;
+        }
+        public override bool TryMove(int dx, int dy, Graphics g)
+        {
+            shapes.front();
+            while (!shapes.eol())
+            {
+                if (shapes.getObject().TryMove(dx, dy, g) == false)
+                    return false;
+
+                shapes.next();
+            }
+
+            return true;
+        }
+        public override void Move(int dx, int dy)
+        {
+            shapes.front();
+            while (!shapes.eol())
+            {
+                shapes.getObject().Move(dx, dy);
+
+                shapes.next();
+            }
+        }
+        public override bool TryResize(int d, Graphics g)
+        {
+            shapes.front();
+            while (!shapes.eol())
+            {
+                if (shapes.getObject().TryResize(d, g) == false)
+                    return false;
+
+                shapes.next();
+            }
+
+            return true;
+        }
+        public override void Resize(int size)
+        {
+            shapes.front();
+            while (!shapes.eol())
+            {
+                shapes.getObject().Resize(size);
+
+                shapes.next();
+            }
+        }
+        public override void Draw(Graphics g)
+        {
+            shapes.front();
+            while (!shapes.eol())
+            {
+                shapes.getObject().Draw(g);
+
+                shapes.next();
+            }
+        }
+
+        public override void ColorChange(HatchBrush hatch)
+        {
+            brush = hatch;
+
+            shapes.front();
+            while (!shapes.eol())
+            {
+                shapes.getObject().ColorChange(brush);
+
+                shapes.next();
+            }
+        }
+
+        public override bool Current
+        {
+            get => current;
+            set
+            {
+                current = value;
+
+                shapes.front();
+                while (!shapes.eol())
+                {
+                    shapes.getObject().Current = current;
+
+                    shapes.next();
+                }
+            }
+        }
+
+        public override void Save(StreamWriter sw)
+        {
+            sw.WriteLine("G");
+            sw.WriteLine(shapes.size);
+
+            shapes.front();
+            while (!shapes.eol())
+            {
+                shapes.getObject().Save(sw);
+
+                shapes.next();
+            }
+        }
+
+        public override void Load(StreamReader sw)
+        {
+            shapes.loadShapes(sw);
+        }
+
+        public override HatchBrush hBrush
+        {
+            get => brush;
+        }
+
+        ~CGroup()
+        {
+            shapes.clear();
         }
     }
 }
