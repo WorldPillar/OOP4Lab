@@ -568,7 +568,6 @@ namespace OOP4Lab
                 shapes.next();
             }
 
-            current = false;
             return false;
         }
         public override bool TryMove(int dx, int dy, Graphics g)

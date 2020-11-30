@@ -20,7 +20,9 @@ namespace OOP4Lab
         private Graphics g;
         //Буфер для bitmap изображения
         private Bitmap bitmapDraw;
+        //Действие над формой
         private string action;
+        //Какая фигура будет создана
         private string shapeCreate;
 
         private Model model;
@@ -115,6 +117,7 @@ namespace OOP4Lab
             }
         }
 
+        //Добавление фигуры в зависимости от выбора
         private void AddShape(MouseEventArgs e)
         {
             switch (shapeCreate)
@@ -275,7 +278,6 @@ namespace OOP4Lab
 
                 CopyList.next();
             }
-            group = null;
             
             ActiveActionChange(createMenu, null);
         }
@@ -288,17 +290,11 @@ namespace OOP4Lab
 
             string writePath = @"D:\GitHub\OOP4Lab\shapes.txt";
 
-            StreamWriter st = new StreamWriter(writePath, true);
+            StreamWriter file = new StreamWriter(writePath, true);
 
-            st.WriteLine(Mylist.size);
-            Mylist.front();
-            while (!Mylist.eol())
-            {
-                Mylist.getObject().Save(st);
-                Mylist.next();
-            }
+            Mylist.saveShapes(file);
 
-            st.Close();
+            file.Close();
             LoadMenu.Enabled = true;
             Mylist.clear();
             Draw();

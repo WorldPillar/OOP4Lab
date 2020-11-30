@@ -183,7 +183,6 @@ namespace OOP4Lab
 
             for (int i = 0; i < count; ++i)
             {
-
                 string code;
 
                 while ((code = file.ReadLine()) != null)
@@ -197,6 +196,17 @@ namespace OOP4Lab
                         push_back(shape);
                     }
                 }
+            }
+        }
+
+        public void saveShapes(StreamWriter file)
+        {
+            file.WriteLine(size);
+            front();
+            while (!eol())
+            {
+                getObject().Save(file);
+                next();
             }
         }
     }
