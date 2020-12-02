@@ -59,7 +59,7 @@
             this.drawBox.BackColor = System.Drawing.Color.White;
             this.drawBox.Location = new System.Drawing.Point(0, 27);
             this.drawBox.Name = "drawBox";
-            this.drawBox.Size = new System.Drawing.Size(1184, 523);
+            this.drawBox.Size = new System.Drawing.Size(695, 327);
             this.drawBox.TabIndex = 0;
             this.drawBox.TabStop = false;
             this.drawBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.drawBoxClick);
@@ -78,7 +78,7 @@
             this.SaveMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1184, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(696, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -148,7 +148,7 @@
             this.circleMenu.CheckOnClick = true;
             this.circleMenu.CheckState = System.Windows.Forms.CheckState.Checked;
             this.circleMenu.Name = "circleMenu";
-            this.circleMenu.Size = new System.Drawing.Size(180, 22);
+            this.circleMenu.Size = new System.Drawing.Size(160, 22);
             this.circleMenu.Text = "Круг";
             this.circleMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -157,7 +157,7 @@
             this.triangleMenu.BackColor = System.Drawing.Color.Azure;
             this.triangleMenu.CheckOnClick = true;
             this.triangleMenu.Name = "triangleMenu";
-            this.triangleMenu.Size = new System.Drawing.Size(180, 22);
+            this.triangleMenu.Size = new System.Drawing.Size(160, 22);
             this.triangleMenu.Text = "Треугольник";
             this.triangleMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -166,7 +166,7 @@
             this.squareMenu.BackColor = System.Drawing.Color.Azure;
             this.squareMenu.CheckOnClick = true;
             this.squareMenu.Name = "squareMenu";
-            this.squareMenu.Size = new System.Drawing.Size(180, 22);
+            this.squareMenu.Size = new System.Drawing.Size(160, 22);
             this.squareMenu.Text = "Квадрат";
             this.squareMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -175,7 +175,7 @@
             this.fiveMenu.BackColor = System.Drawing.Color.Azure;
             this.fiveMenu.CheckOnClick = true;
             this.fiveMenu.Name = "fiveMenu";
-            this.fiveMenu.Size = new System.Drawing.Size(180, 22);
+            this.fiveMenu.Size = new System.Drawing.Size(160, 22);
             this.fiveMenu.Text = "Пятиугольник";
             this.fiveMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -184,7 +184,7 @@
             this.sixMenu.BackColor = System.Drawing.Color.Azure;
             this.sixMenu.CheckOnClick = true;
             this.sixMenu.Name = "sixMenu";
-            this.sixMenu.Size = new System.Drawing.Size(180, 22);
+            this.sixMenu.Size = new System.Drawing.Size(160, 22);
             this.sixMenu.Text = "Шестиугольник";
             this.sixMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -193,7 +193,7 @@
             this.starMenu.BackColor = System.Drawing.Color.Azure;
             this.starMenu.CheckOnClick = true;
             this.starMenu.Name = "starMenu";
-            this.starMenu.Size = new System.Drawing.Size(180, 22);
+            this.starMenu.Size = new System.Drawing.Size(160, 22);
             this.starMenu.Text = "Звезда";
             this.starMenu.Click += new System.EventHandler(this.ToolStripMenueItem_Click);
             // 
@@ -259,7 +259,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1184, 550);
+            this.ClientSize = new System.Drawing.Size(696, 355);
             this.Controls.Add(this.drawBox);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

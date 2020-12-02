@@ -260,6 +260,7 @@ namespace OOP4Lab
                     group = Mylist.getObject() as CGroup;
                     if (group != null)
                     {
+                        Mylist.erase(Mylist.getCurrent());
                         break;
                     }
                     else

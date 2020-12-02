@@ -172,7 +172,7 @@ namespace OOP4Lab
             return current;
         }
 
-        protected virtual AbstractShape creatShapes(string code)
+        protected virtual AbstractShape createShapes(string code)
         {
             return null;
         }
@@ -187,7 +187,7 @@ namespace OOP4Lab
 
                 while ((code = file.ReadLine()) != null)
                 {
-                    AbstractShape shape = creatShapes(code);
+                    AbstractShape shape = createShapes(code);
 
                     if (shape != null)
                     {
@@ -213,7 +213,7 @@ namespace OOP4Lab
 
     class MyLinkedList : LinkedList
     {
-        protected override AbstractShape creatShapes(string code)
+        protected override AbstractShape createShapes(string code)
         {
             AbstractShape shape = null;
             switch (code)
