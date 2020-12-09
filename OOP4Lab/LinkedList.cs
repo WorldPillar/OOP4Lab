@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,14 +23,13 @@ namespace OOP4Lab
         //Счётчик элементов
         protected int count = 0;
         //Список наблюдателей
-        List<CObserver> observers;
+        TreeViewer observer;
         //Конструктор по умолчанию
         public LinkedList()
         {
             root = null;
             tail = root;
             current = root;
-            observers = new List<CObserver>();
         }
         //Получение размера списка
         public int size
@@ -78,7 +78,7 @@ namespace OOP4Lab
             }
             current = root;
 
-            notifyEveryone();
+            notify();
         }
         //Добавляет объект в конец списка
         public void push_back(AbstractShape newObj)
@@ -97,7 +97,7 @@ namespace OOP4Lab
                 tail = newNode;
             }
 
-            notifyEveryone();
+            notify();
         }
         //Вставляет объект после it
         public void insert(Node it, AbstractShape newObj)
@@ -113,7 +113,7 @@ namespace OOP4Lab
             else
                 tail = newNode;
 
-            notifyEveryone();
+            notify();
         }
         //Удаляет объект it
         public void erase(Node it)
@@ -141,7 +141,7 @@ namespace OOP4Lab
             }
             it = null;
 
-            notifyEveryone();
+            notify();
         }
         //Полностью очищает список
         public void clear()
@@ -157,7 +157,7 @@ namespace OOP4Lab
             tail = null;
             count = 0;
 
-            notifyEveryone();
+            notify();
         }
         //Сбрасывает значение current у объектов
         public void makeObjectsFalse()
@@ -168,6 +168,26 @@ namespace OOP4Lab
                 getObject().Current = false;
                 next();
             }
+
+            notify();
+        }
+        //Проверяет, есть ли выбранные фигуры
+        public bool inShape(int xPos, int yPos)
+        {
+            back();
+            while (!eol())
+            {
+                if (getObject().inShape(xPos, yPos))
+                {
+                    notify();
+                    return true;
+                }
+                else
+                    prev();
+            }
+
+            notify();
+            return false;
         }
         public AbstractShape getRoot()
         {
@@ -199,6 +219,7 @@ namespace OOP4Lab
             return null;
         }
 
+        //Загружает фигуры
         public void loadShapes(StreamReader file)
         {
             int count = int.Parse(file.ReadLine());
@@ -221,6 +242,7 @@ namespace OOP4Lab
             }
         }
 
+        //Сохраняет фигуры
         public void saveShapes(StreamWriter file)
         {
             file.WriteLine(size);
@@ -232,17 +254,47 @@ namespace OOP4Lab
             }
         }
 
-        public void addObserver(CObserver newObs)
+        //Добавляет подписчиков
+        public void addObserver(TreeViewer treeV)
         {
-            observers.Add(newObs);
+            observer = treeV;
         }
 
-        private void notifyEveryone()
+        //Сообщает подписчикам об изменении
+        private void notify()
         {
-            foreach (var it in observers)
+            if (observer != null)
+                observer.OnSubjectChanged(this);
+        }
+
+        ////Данный метод вызывается при изменении дерева
+        public void OnSubjectChanged(TreeViewer tree)
+        {
+            front();
+            foreach (TreeNode it in tree.TreeView.Nodes[0].Nodes)
             {
-                it.OnSubjectChanged(this);
+                processNode(it);
+                next();
             }
+        }
+
+        //Выделение элемента на форме согласно выделенному эл. дерева
+        public bool processNode(TreeNode it)
+        {
+            if (it.IsSelected)
+            {
+                getObject().Current = true;
+                return true;
+            }
+            else if (it.Nodes.Count != 0)
+            {
+                foreach (TreeNode inIT in it.Nodes)
+                    if (processNode(inIT))
+                        return true;
+            }
+
+            getObject().Current = false;
+            return false;
         }
     }
 

@@ -4,24 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace OOP4Lab
 {
-    abstract class CObserver
-    {
-        public abstract void OnSubjectChanged(LinkedList list);
-    }
-
-    class TreeViewer : CObserver
+    class TreeViewer
     {
         TreeView treeviewer;
+
+        LinkedList observer;
         public TreeViewer(TreeView newTree)
         {
             treeviewer = newTree;
         }
 
         //Данный метод вызывается при изменении хранилища
-        public override void OnSubjectChanged(LinkedList list)
+        public void OnSubjectChanged(LinkedList list)
         {
             treeviewer.BeginUpdate();
             treeviewer.Nodes[0].Nodes.Clear();
@@ -31,7 +29,10 @@ namespace OOP4Lab
             list.front();
             while (list.eol() == false)
             {
-                treeviewer.Nodes[0].Nodes.Add(new TreeNode());
+                TreeNode newNode = new TreeNode();
+                treeviewer.Nodes[0].Nodes.Add(newNode);
+                if (list.getObject().Current)
+                    treeviewer.SelectedNode = newNode;
 
                 processNode(treeviewer.Nodes[0].Nodes[i++], list.getObject());
                 list.next();
@@ -63,6 +64,28 @@ namespace OOP4Lab
                     list.next();
                 }
             }
+        }
+
+        public void addObserver(LinkedList list)
+        {
+            observer = list;
+        }
+
+        //Сообщает подписчикам об изменении
+        private void notify()
+        {
+            if (observer != null)
+                observer.OnSubjectChanged(this);
+        }
+
+        public void SelectedChanged()
+        {
+            notify();
+        }
+
+        public TreeView TreeView
+        {
+            get => treeviewer;
         }
     }
 }

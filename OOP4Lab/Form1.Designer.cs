@@ -60,7 +60,7 @@
             this.drawBox.BackColor = System.Drawing.Color.White;
             this.drawBox.Location = new System.Drawing.Point(0, 27);
             this.drawBox.Name = "drawBox";
-            this.drawBox.Size = new System.Drawing.Size(820, 327);
+            this.drawBox.Size = new System.Drawing.Size(719, 382);
             this.drawBox.TabIndex = 0;
             this.drawBox.TabStop = false;
             this.drawBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.drawBoxClick);
@@ -79,7 +79,7 @@
             this.SaveMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1031, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(917, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -257,21 +257,24 @@
             // 
             // ObserveTree
             // 
-            this.ObserveTree.BackColor = System.Drawing.Color.LemonChiffon;
+            this.ObserveTree.BackColor = System.Drawing.Color.PaleTurquoise;
             this.ObserveTree.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.ObserveTree.FullRowSelect = true;
-            this.ObserveTree.Location = new System.Drawing.Point(820, 27);
+            this.ObserveTree.HideSelection = false;
+            this.ObserveTree.Location = new System.Drawing.Point(716, 27);
             this.ObserveTree.Name = "ObserveTree";
-            this.ObserveTree.Size = new System.Drawing.Size(211, 327);
+            this.ObserveTree.Size = new System.Drawing.Size(201, 382);
             this.ObserveTree.TabIndex = 1;
             this.ObserveTree.TabStop = false;
+            this.ObserveTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TeeViewSelectedChanged);
+            this.ObserveTree.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ObserveTree_MouseClick);
             // 
             // PaintBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGray;
-            this.ClientSize = new System.Drawing.Size(1031, 355);
+            this.ClientSize = new System.Drawing.Size(917, 408);
             this.Controls.Add(this.ObserveTree);
             this.Controls.Add(this.drawBox);
             this.Controls.Add(this.menuStrip1);

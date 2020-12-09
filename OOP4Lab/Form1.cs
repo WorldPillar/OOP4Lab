@@ -16,6 +16,8 @@ namespace OOP4Lab
     {
         //Создаём список
         MyLinkedList Mylist;
+        //Дерево
+        TreeViewer tree;
         //Создаём объект класса graphics для рисования
         private Graphics g;
         //Буфер для bitmap изображения
@@ -24,6 +26,8 @@ namespace OOP4Lab
         private string action;
         //Какая фигура будет создана
         private string shapeCreate;
+        //Нажатие на treeview
+        private bool treeClick = false;
 
         private Model model;
         public PaintBox()
@@ -31,9 +35,11 @@ namespace OOP4Lab
             InitializeComponent();
             //Инициализируем список
             Mylist = new MyLinkedList();
-            //Подписываем дерево объектов на наше хранилище
-            TreeViewer tree = new TreeViewer(ObserveTree);
+            //Подписываем дерево объектов на наше хранилище и обратно
+            tree = new TreeViewer(ObserveTree);
             Mylist.addObserver(tree);
+
+            tree.addObserver(Mylist);
 
             ObserveTree.Nodes.Add(new TreeNode("MyLinkedList"));
             //Инициализируем объект bitmap, копируем размер drawBox в него
@@ -67,33 +73,16 @@ namespace OOP4Lab
             drawBox.Image = bitmapDraw;
         }
 
-        public bool inShape(int xPos, int yPos)
-        {
-            if (action == "add")
-                Mylist.makeObjectsFalse();
-
-            //проверка, находился ли курсор в круге
-            Mylist.back();
-            while (!Mylist.eol())
-            {
-                if (Mylist.getObject().inShape(xPos, yPos))
-                {
-                    return true;
-                }
-                else
-                    Mylist.prev();
-            }
-
-            return false;
-        }
-
         private void drawBoxClick(object sender, MouseEventArgs e)
         {
             //если курсор не был в уже созданном круге,
             //создасться новый круг и изображение обновится
             if (e.Button == MouseButtons.Left)
             {
-                if (!inShape(e.X, e.Y))
+                if (action == "add")
+                    Mylist.makeObjectsFalse();
+
+                if (!Mylist.inShape(e.X, e.Y))
                 {
                     if (action == "add")
                     {
@@ -305,6 +294,22 @@ namespace OOP4Lab
 
             file.Close();
             LoadMenu.Enabled = false;
+        }
+
+        private void TeeViewSelectedChanged(object sender, TreeViewEventArgs e)
+        {
+            if (treeClick)
+            {
+                tree.SelectedChanged();
+                Draw();
+            }
+
+            treeClick = false;
+        }
+
+        private void ObserveTree_MouseClick(object sender, MouseEventArgs e)
+        {
+            treeClick = true;
         }
     }
 
