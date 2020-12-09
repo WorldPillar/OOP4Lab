@@ -7,7 +7,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
 
 namespace OOP4Lab
 {
@@ -21,13 +21,15 @@ namespace OOP4Lab
         Node current;
         //Счётчик элементов
         protected int count = 0;
-
+        //Список наблюдателей
+        List<CObserver> observers;
         //Конструктор по умолчанию
         public LinkedList()
         {
             root = null;
             tail = root;
             current = root;
+            observers = new List<CObserver>();
         }
         //Получение размера списка
         public int size
@@ -75,6 +77,8 @@ namespace OOP4Lab
                 root = newNode;
             }
             current = root;
+
+            notifyEveryone();
         }
         //Добавляет объект в конец списка
         public void push_back(AbstractShape newObj)
@@ -92,6 +96,8 @@ namespace OOP4Lab
                 tail.nextNode = newNode;
                 tail = newNode;
             }
+
+            notifyEveryone();
         }
         //Вставляет объект после it
         public void insert(Node it, AbstractShape newObj)
@@ -106,6 +112,8 @@ namespace OOP4Lab
                 afterIt.prevNode = newNode;
             else
                 tail = newNode;
+
+            notifyEveryone();
         }
         //Удаляет объект it
         public void erase(Node it)
@@ -132,6 +140,8 @@ namespace OOP4Lab
                 current = tail;
             }
             it = null;
+
+            notifyEveryone();
         }
         //Полностью очищает список
         public void clear()
@@ -146,6 +156,8 @@ namespace OOP4Lab
             } while (root != null);
             tail = null;
             count = 0;
+
+            notifyEveryone();
         }
         public AbstractShape getRoot()
         {
@@ -207,6 +219,19 @@ namespace OOP4Lab
             {
                 getObject().Save(file);
                 next();
+            }
+        }
+
+        public void addObserver(CObserver newObs)
+        {
+            observers.Add(newObs);
+        }
+
+        private void notifyEveryone()
+        {
+            foreach (var it in observers)
+            {
+                it.OnSubjectChanged(this);
             }
         }
     }

@@ -31,6 +31,11 @@ namespace OOP4Lab
             InitializeComponent();
             //Инициализируем список
             Mylist = new MyLinkedList();
+            //Подписываем дерево объектов на наше хранилище
+            TreeViewer tree = new TreeViewer(ObserveTree);
+            Mylist.addObserver(tree);
+
+            ObserveTree.Nodes.Add(new TreeNode("MyLinkedList"));
             //Инициализируем объект bitmap, копируем размер drawBox в него
             bitmapDraw = new Bitmap(drawBox.Width, drawBox.Height);
             //Инициализация g
@@ -236,6 +241,8 @@ namespace OOP4Lab
                 {
                     group.Add(Mylist.getObject());
                     Mylist.erase(Mylist.getCurrent());
+
+                    Mylist.front();
                 }
                 else
                     Mylist.next();
@@ -321,7 +328,6 @@ namespace OOP4Lab
         int sizeChange;
         int move;
         ColorDialog colorChoose;
-        Graphics g;
         Stack<Command> history;
         Dictionary<Keys, Command> commands;
 
@@ -330,7 +336,6 @@ namespace OOP4Lab
             sizeChange = 5;
             move = 5;
             colorChoose = color;
-            this.g = g;
 
             history = new Stack<Command>();
             commands = new Dictionary<Keys, Command>();

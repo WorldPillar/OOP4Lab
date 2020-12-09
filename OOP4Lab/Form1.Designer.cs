@@ -50,6 +50,7 @@
             this.LoadMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.chooseColor = new System.Windows.Forms.ColorDialog();
+            this.ObserveTree = new System.Windows.Forms.TreeView();
             ((System.ComponentModel.ISupportInitialize)(this.drawBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -59,7 +60,7 @@
             this.drawBox.BackColor = System.Drawing.Color.White;
             this.drawBox.Location = new System.Drawing.Point(0, 27);
             this.drawBox.Name = "drawBox";
-            this.drawBox.Size = new System.Drawing.Size(695, 327);
+            this.drawBox.Size = new System.Drawing.Size(820, 327);
             this.drawBox.TabIndex = 0;
             this.drawBox.TabStop = false;
             this.drawBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.drawBoxClick);
@@ -78,7 +79,7 @@
             this.SaveMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(696, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1031, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -254,12 +255,24 @@
             this.chooseColor.AnyColor = true;
             this.chooseColor.SolidColorOnly = true;
             // 
+            // ObserveTree
+            // 
+            this.ObserveTree.BackColor = System.Drawing.Color.LemonChiffon;
+            this.ObserveTree.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ObserveTree.FullRowSelect = true;
+            this.ObserveTree.Location = new System.Drawing.Point(820, 27);
+            this.ObserveTree.Name = "ObserveTree";
+            this.ObserveTree.Size = new System.Drawing.Size(211, 327);
+            this.ObserveTree.TabIndex = 1;
+            this.ObserveTree.TabStop = false;
+            // 
             // PaintBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(696, 355);
+            this.BackColor = System.Drawing.Color.LightGray;
+            this.ClientSize = new System.Drawing.Size(1031, 355);
+            this.Controls.Add(this.ObserveTree);
             this.Controls.Add(this.drawBox);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -299,6 +312,7 @@
         private System.Windows.Forms.ToolStripMenuItem SaveMenu;
         private System.Windows.Forms.ToolStripMenuItem LoadMenu;
         private System.Windows.Forms.ToolStripMenuItem bachSpaceОткатКомандыToolStripMenuItem;
+        private System.Windows.Forms.TreeView ObserveTree;
     }
 }
 

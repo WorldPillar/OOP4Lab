@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Observer.cs" />
     <Compile Include="Shapes.cs" />
     <Compile Include="LinkedList.cs" />
     <Compile Include="Form1.cs">
