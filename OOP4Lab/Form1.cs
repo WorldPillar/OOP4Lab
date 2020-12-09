@@ -336,13 +336,13 @@ namespace OOP4Lab
             //Увеличиваем фигуру
             commands[Keys.Oemplus] = new ReSizeCommand(sizeChange, g);
             //Сдвиг фигуры вниз
-            commands[Keys.Down] = new MoveCommand(0, move, g);
+            commands[Keys.S] = new MoveCommand(0, move, g);
             //Сдвиг фигуры вверх
-            commands[Keys.Up] = new MoveCommand(0, -move, g);
+            commands[Keys.W] = new MoveCommand(0, -move, g);
             //Сдвиг фигуры влево
-            commands[Keys.Left] = new MoveCommand(-move, 0, g);
+            commands[Keys.A] = new MoveCommand(-move, 0, g);
             //Сдвиг фигуры вправо
-            commands[Keys.Right] = new MoveCommand(move, 0, g);
+            commands[Keys.D] = new MoveCommand(move, 0, g);
             //Меняем цвет фигуры
             commands[Keys.C] = new ColorCommand(colorChoose);
         }
