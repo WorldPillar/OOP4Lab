@@ -159,6 +159,16 @@ namespace OOP4Lab
 
             notifyEveryone();
         }
+        //Сбрасывает значение current у объектов
+        public void makeObjectsFalse()
+        {
+            front();
+            while (!eol())
+            {
+                getObject().Current = false;
+                next();
+            }
+        }
         public AbstractShape getRoot()
         {
             if (root == null)

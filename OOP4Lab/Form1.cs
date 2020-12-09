@@ -67,21 +67,10 @@ namespace OOP4Lab
             drawBox.Image = bitmapDraw;
         }
 
-        //Обнуление текущего значения у всех объектов
-        private void allFalse()
-        {
-            Mylist.front();
-            while (!Mylist.eol())
-            {
-                Mylist.getObject().Current = false;
-                Mylist.next();
-            }
-        }
-
         public bool inShape(int xPos, int yPos)
         {
             if (action == "add")
-                allFalse();
+                Mylist.makeObjectsFalse();
 
             //проверка, находился ли курсор в круге
             Mylist.back();
@@ -95,9 +84,6 @@ namespace OOP4Lab
                     Mylist.prev();
             }
 
-            //Обнуляем значения при создании нового объекта
-            if (action == "add")
-                allFalse();
             return false;
         }
 
@@ -205,7 +191,7 @@ namespace OOP4Lab
         {
             groupMenu.BackColor = Color.MediumTurquoise;
             createMenu.BackColor = Color.MediumTurquoise;
-            allFalse();
+            Mylist.makeObjectsFalse();
             Draw();
 
             if (sender.Equals(groupMenu))
